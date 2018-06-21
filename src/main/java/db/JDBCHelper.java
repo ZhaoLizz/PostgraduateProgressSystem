@@ -287,23 +287,20 @@ public class JDBCHelper {
             fields[i].setAccessible(true);
             Object val = fields[i].get(o);
             if (val != null) {
-                sql += fields[i].getName() + " = ?, ";
+                sql += fields[i].getName() + "=? and ";
                 params.add(val);
             }
         }
 
         //如果参数对象的域都不为空,sql语句就不为空
         if ((!sql.equals("")) && sql != "") {
-            sql = sql.substring(0, sql.length() - 1);
+            sql = sql.substring(0, sql.length() - 4);   //删掉最后的冗余and和空格
             String table = o.getClass().getName();  //参数对象的类的名字,也就是表名
-//            sql = "DELETE FROM " + table.substring(table.lastIndexOf(".") + 1, table.length())
-//                    + " WHRER " + sql;
-
-//            sql = "delete from Student where student_no = ? , student_pw = ? , student_name = ? , student_target = ? , student_special = ? , student_is_manager = ? ";
-            sql = "delete from Student where student_no = ?";
+            sql = "delete from " + table.substring(table.lastIndexOf(".") + 1, table.length())
+                    + " where " + sql;
 
             System.out.println(sql);
-            reNumber = updateByPreparedStatement(sql, params);
+            reNumber = updateByPreparedStatement(sql,params);
         }
         return reNumber;
     }
@@ -322,19 +319,35 @@ public class JDBCHelper {
     }
 
     public static void main(String[] args) {
-        JDBCHelper helper = main.java.db.JDBCHelper.getInstance();
-        String sql = "SELECT * FROM Student";
-        try {
-//            Map<String, Object> result = helper.findSingleResult(sql, null);
-//            System.out.println(result.get("student_no"));
+        Student student = new Student();
+        student.setStudent_name("Rick");
+        student.setStudent_no("Rick");
+        student.setStudent_pw("123");
+        student.setStudent_special("Science");
+        student.setStudent_target("space");
 
-            Student student = helper.findSingleRefResult(sql, null, Student.class);
-            System.out.println(student.getStudent_no());
+        /*student.save(new JDBCDao.SaveListerner() {
+            @Override
+            public void onSucceed() {
+                System.out.println("save succeed!");
+            }
 
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+            @Override
+            public void onFailed(Exception e) {
+                e.printStackTrace();
+            }
+        });*/
+
+        student.delete(new JDBCDao.DeleteListener() {
+            @Override
+            public void onSucceed() {
+                System.out.println("delete succeed!");
+            }
+
+            @Override
+            public void onFailed(Exception e) {
+                e.printStackTrace();
+            }
+        });
     }
 }

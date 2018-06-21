@@ -64,38 +64,4 @@ public class Student extends JDBCObject {
         this.student_is_manager = student_is_manager;
     }
 
-    public static void main(String[] args) {
-        Student student = new Student();
-        student.setStudent_name("Rick");
-        student.setStudent_no("Rick");
-        student.setStudent_pw("123");
-        student.setStudent_special("Science");
-        student.setStudent_target("space");
-
-        /*student.save(new JDBCDao.SaveListerner() {
-            @Override
-            public void onSucceed() {
-                System.out.println("save succeed!");
-            }
-
-            @Override
-            public void onFailed(Exception e) {
-                e.printStackTrace();
-            }
-        });*/
-
-        student.delete(new JDBCDao.DeleteListener() {
-            @Override
-            public void onSucceed() {
-                System.out.println("delete succeed!");
-            }
-
-            @Override
-            public void onFailed(Exception e) {
-                e.printStackTrace();
-            }
-        });
-
-
-    }
 }
