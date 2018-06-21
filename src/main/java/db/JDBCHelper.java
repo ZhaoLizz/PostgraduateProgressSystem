@@ -201,14 +201,41 @@ public class JDBCHelper {
     /**
      * 通过反射机制查询多条记录
      *
-     * @param sql
-     * @param params
      * @param cls
      * @return
      * @throws Exception
      */
-    public <T> List<T> findMlutiRefResult(String sql, List<Object> params,
-                                          Class<T> cls) throws Exception {
+    public <T> List<T> query(Object condition, Class<T> cls) throws Exception {
+        //通过条件对象构造sql查询语句
+        String sql = "";
+        Class<?> baseDao = condition.getClass();
+        List<Object> params = new ArrayList<>();
+        Field[] fields = baseDao.getDeclaredFields();
+        //通过参数对象的域构造查询条件
+        for (int i = 0; i < fields.length; i++) {
+            fields[i].setAccessible(true);
+            Object val = fields[i].get(condition);
+
+            if (val != null) {
+                sql += fields[i].getName() + "=? and ";
+                params.add(val);
+            }
+        }
+
+        if ((!sql.equals("")) && sql != "") {
+            sql = sql.substring(0, sql.length() - 4);
+            String table = condition.getClass().getName();
+            sql = "select * from " + table.substring(table.lastIndexOf(".") + 1, table.length())
+                    + " where " + sql;
+
+//            sql = "select * from Student where student_pw = ?";
+//            params.clear();
+//            params.add("123");
+
+            System.out.println(sql);
+        }
+
+
         List<T> list = new ArrayList<T>();
         int index = 1;
         pstmt = connection.prepareStatement(sql);
@@ -223,7 +250,6 @@ public class JDBCHelper {
         while (resultSet.next()) {
             //通过反射机制创建一个实例
             T resultObject = cls.newInstance();
-
             for (int i = 0; i < cols_len; i++) {
                 String cols_name = metaData.getColumnName(i + 1);
                 Object cols_value = resultSet.getObject(cols_name);
@@ -238,6 +264,7 @@ public class JDBCHelper {
         }
         return list;
     }
+
 
     public int save(Object o) throws Exception {
         int reNumber = -1;
@@ -300,10 +327,54 @@ public class JDBCHelper {
                     + " where " + sql;
 
             System.out.println(sql);
-            reNumber = updateByPreparedStatement(sql,params);
+            reNumber = updateByPreparedStatement(sql, params);
         }
         return reNumber;
     }
+
+    public int update(Object newValue, Object condition) throws Exception {
+        int reNumber = -1;
+        String sql = "";
+        Class<?> baseDao = newValue.getClass();
+        List<Object> params = new ArrayList<Object>();
+        Field[] fields = baseDao.getDeclaredFields();// 返回Field数组
+        for (int i = 0; i < fields.length; i++) {
+            fields[i].setAccessible(true);
+            Object val = fields[i].get(newValue);
+            if (val != null) {
+                sql += fields[i].getName() + "=?,";
+                params.add(val);
+            }
+        }
+
+        if ((!sql.equals("")) && sql != "") {
+            sql = sql.substring(0, sql.length() - 1);
+            String table = newValue.getClass().getName();
+
+            //构造where子句
+            String whereStr = "";
+            fields = condition.getClass().getDeclaredFields();
+            for (int i = 0; i < fields.length; i++) {
+                fields[i].setAccessible(true);
+                Object val = fields[i].get(condition);
+                if (val != null) {
+                    whereStr += fields[i].getName() + "=? and ";
+                    params.add(val);
+                }
+            }
+            whereStr = whereStr.substring(0, whereStr.length() - 4);
+
+            sql = "update " + table.substring(table.lastIndexOf(".") + 1, table.length())
+                    + " set " + sql + " where " + whereStr;
+
+            System.out.println(sql);
+            reNumber = updateByPreparedStatement(sql, params);
+            return reNumber;
+        }
+
+        return reNumber;
+    }
+
 
     /**
      * 释放数据库连接
@@ -320,34 +391,7 @@ public class JDBCHelper {
 
     public static void main(String[] args) {
         Student student = new Student();
-        student.setStudent_name("Rick");
-        student.setStudent_no("Rick");
-        student.setStudent_pw("123");
-        student.setStudent_special("Science");
-        student.setStudent_target("space");
-
-        /*student.save(new JDBCDao.SaveListerner() {
-            @Override
-            public void onSucceed() {
-                System.out.println("save succeed!");
-            }
-
-            @Override
-            public void onFailed(Exception e) {
-                e.printStackTrace();
-            }
-        });*/
-
-        student.delete(new JDBCDao.DeleteListener() {
-            @Override
-            public void onSucceed() {
-                System.out.println("delete succeed!");
-            }
-
-            @Override
-            public void onFailed(Exception e) {
-                e.printStackTrace();
-            }
-        });
+        student.setStudent_name("Morty");
+        student.query(student.getClass(), );
     }
 }
