@@ -1,5 +1,13 @@
 package main.java.controller;
 
+import com.jfoenix.controls.JFXAlert;
+import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXDecorator;
+import com.jfoenix.controls.JFXDialog;
+import com.jfoenix.controls.JFXDialogLayout;
+
+import io.datafx.controller.flow.Flow;
+import io.datafx.controller.flow.container.DefaultFlowContainer;
 import io.datafx.controller.flow.context.FXMLViewFlowContext;
 import io.datafx.controller.flow.context.ViewFlowContext;
 import javafx.animation.KeyFrame;
@@ -12,15 +20,26 @@ import javafx.fxml.Initializable;
 import javafx.scene.Cursor;
 import javafx.scene.Scene;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Control;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import main.java.app.MainApp;
+import main.java.db.JDBCDao;
+import main.java.model.Student;
+import main.java.model.User;
+import main.java.utils.TextUtils;
+import main.java.utils.Toast;
 
 import java.net.URL;
+import java.util.List;
 import java.util.Random;
 import java.util.ResourceBundle;
 
@@ -37,15 +56,13 @@ public class LoginController implements Initializable {
 
     private Scene scene;
     @FXML
-    private BorderPane borderPane;
+    private BorderPane borderPane;  //登录界面总布局
     @FXML
     private ImageView adminView;
     @FXML
     private TextField usernameTextField;
     @FXML
     private TextField passwordTextField;
-    @FXML
-    private ChoiceBox imagePicker;
 
     @FXMLViewFlowContext
     private ViewFlowContext flowContext;
@@ -100,7 +117,7 @@ public class LoginController implements Initializable {
 
         KeyValue moveXAxis = null;
         KeyValue moveYAxis = null;
-        Rectangle r1 = null;
+        Rectangle r1 = null;    //正方形
 
         switch (direction) {
             case 1:
@@ -150,7 +167,6 @@ public class LoginController implements Initializable {
         timeline.play();
 
         borderPane.getChildren().add(borderPane.getChildren().size() - 1, r1);
-
     }
 
 
@@ -162,67 +178,56 @@ public class LoginController implements Initializable {
      */
     public void loginButtonAction(ActionEvent actionEvent) throws Exception {
         //todo 验证登录
-        /*String username = usernameTextField.getText();
+        String username = usernameTextField.getText();
         String password = passwordTextField.getText();
         if (TextUtils.isEmpty(username) || TextUtils.isEmpty(password)) {
-            Toast.show(borderPane, "输入框不能为空");
+            showDialog("提示", "用户名或密码不能为空!");
             return;
         } else {
-            switch (currentType) {
-                case TYPE_TEACHER:
-                    TeacherImpl teacherDB = new TeacherImpl();
-                    if (!teacherDB.validateLogin(username, password, Statics.SIMPLE_TEACHER)) {
-                        Toast.show(borderPane, "用户名或密码错误");
-                        return;
-                    } else {
-                        Statics.TYPE_CURR = Statics.TYPE_TEACHRE;
-                    }
-                    break;
-                case TYPE_ADMIN:
-                    TeacherImpl teacherDB1 = new TeacherImpl();
-                    if (!teacherDB1.validateLogin(username, password, Statics.ADMIN_TEACHER)) {
-                        Toast.show(borderPane, "用户名或密码权限错误");
-                        return;
-                    } else {
-                        Statics.TYPE_CURR = Statics.TYPE_ADMIN;
-                    }
-                    break;
-            }
-        }*/
-        /*Statics.TYPE_CURR = Statics.TYPE_TEACHRE;
-        Statics.CURR_USERNAME = "T160701";
+            Student student = new Student();
+            student.setStudent_no(username);
+            student.setStudent_pw(password);
+            student.query(Student.class, new JDBCDao.QueryListener<Student>() {
+                @Override
+                public void onSucceed(List<Student> result) {
+                    if (result != null && result.size() == 1) {
+                        Student database = result.get(0);
+                        System.out.println(database);
+                        System.out.println("登录成功");
+                        Toast.show(borderPane, "登陆成功!");
+                        User user = User.getInstance();
+                        user.setStudent_is_manager(database.getStudent_is_manager() == 1);
+                        user.setStudent_no(database.getStudent_no());
 
-        Stage primaryStage = MainApp.getPrimaryStage();
-        primaryStage.close();
-        //新建主窗口
-        Stage stage = new Stage();
-        stage.setTitle("教材征订与发放系统");
-        DefaultFlowContainer container = new DefaultFlowContainer();
-        flowContext = new ViewFlowContext();
-        flowContext.register("Stage", stage);
-        JFXDecorator decorator = new JFXDecorator(stage, container.getView());
-        Flow flow = new Flow(MainController.class);
-        flow.createHandler(flowContext).start(container);
-        decorator.setCustomMaximize(true);
-        decorator.setGraphic(new SVGGlyph(""));
-        double width = 800;
-        double height = 600;
-        try {
-            Rectangle2D bounds = Screen.getScreens().get(0).getBounds();
-            width = bounds.getWidth() / 2.5;
-            height = bounds.getHeight() / 1.35;
-        } catch (Exception e) {
+                    } else {
+                        showDialog("提示", "用户名或密码不正确!");
+                    }
+                }
+
+                @Override
+                public void onFailed(Exception e) {
+                    e.printStackTrace();
+                }
+            });
         }
-
-        Scene scene = new Scene(decorator, width, height);
-        final ObservableList<String> stylesheets = scene.getStylesheets();
-        stylesheets.addAll(MainApp.class.getResource("../../resources/css/jfoenix-design.css").toExternalForm(),
-                MainApp.class.getResource("../../resources/css/jfoenix-main-demo.css").toExternalForm());
-        stage.setScene(scene);
-        stage.show();
-*/
     }
 
+    private void changeStage(boolean isManager) {
+        if (isManager) {
+            //TODO manager stage
+        } else {
+            Stage primaryStage = MainApp.getPrimaryStage();
+            primaryStage.close();
+            //新建窗口
+            Stage stage = new Stage();
+            stage.setTitle("考研进度管理系统");
+            DefaultFlowContainer container = new DefaultFlowContainer();
+            flowContext = new ViewFlowContext();
+            flowContext.register("Stage", stage);
+            JFXDecorator decorator = new JFXDecorator(stage, container.getView());
+
+        }
+    }
 
     /**
      * 最小化窗口
@@ -232,6 +237,7 @@ public class LoginController implements Initializable {
      */
     public void minimizeWindow(ActionEvent actionEvent) throws Exception {
         MainApp.getPrimaryStage().setIconified(true);
+
     }
 
 
@@ -244,6 +250,25 @@ public class LoginController implements Initializable {
     public void closeSystem(ActionEvent actionEvent) throws Exception {
         Platform.exit();
         System.exit(0);
+    }
+
+    public void showDialog(String title, String body) {
+        JFXAlert alert = new JFXAlert((Stage) borderPane.getScene().getWindow());
+        alert.initModality(Modality.APPLICATION_MODAL);
+        alert.setOverlayClose(true);
+        JFXDialogLayout layout = new JFXDialogLayout();
+        layout.setHeading(new Label(title));
+        layout.setBody(new Label(body));
+        layout.setMaxHeight(Control.USE_PREF_SIZE);
+        layout.setMaxWidth(Control.USE_PREF_SIZE);
+
+
+        JFXButton closeButton = new JFXButton("确定");
+        closeButton.getStyleClass().add("dialog-accept");
+        closeButton.setOnAction(event -> alert.hideWithAnimation());
+        layout.setActions(closeButton); //dialoglayout加入确认按钮
+        alert.setContent(layout);
+        alert.show();
     }
 
 }

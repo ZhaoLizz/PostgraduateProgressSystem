@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class JDBCObject {
-
     public void save(JDBCDao.SaveListerner listener) {
         JDBCHelper helper = JDBCHelper.getInstance();
         try {

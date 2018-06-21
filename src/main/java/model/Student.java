@@ -11,11 +11,6 @@ public class Student extends JDBCObject {
     private String student_special;
     private int student_is_manager = 0;
 
-    @Override
-    public String toString() {
-        return "Student{}";
-    }
-
     public String getStudent_no() {
         return student_no;
     }
@@ -64,4 +59,15 @@ public class Student extends JDBCObject {
         this.student_is_manager = student_is_manager;
     }
 
+    @Override
+    public String toString() {
+        return "Student{" +
+                "student_no='" + student_no + '\'' +
+                ", student_pw='" + student_pw + '\'' +
+                ", student_name='" + student_name + '\'' +
+                ", student_target='" + student_target + '\'' +
+                ", student_special='" + student_special + '\'' +
+                ", student_is_manager=" + student_is_manager +
+                '}';
+    }
 }
