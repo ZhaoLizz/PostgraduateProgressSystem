@@ -392,6 +392,16 @@ public class JDBCHelper {
     public static void main(String[] args) {
         Student student = new Student();
         student.setStudent_name("Morty");
-        student.query(student.getClass(), );
+        student.query(Student.class, new JDBCDao.QueryListener<Student>() {
+            @Override
+            public void onSucceed(List<Student> result) {
+
+            }
+
+            @Override
+            public void onFailed(Exception e) {
+
+            }
+        });
     }
 }
