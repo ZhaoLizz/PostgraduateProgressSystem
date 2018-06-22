@@ -1,43 +1,64 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-
 <?import com.jfoenix.controls.JFXButton?>
 <?import com.jfoenix.controls.JFXTextField?>
-<?import com.jfoenix.controls.JFXTreeTableView?>
 <?import com.jfoenix.controls.JFXTreeTableColumn?>
-<StackPane fx:id="root" xmlns:fx="http://javafx.com/fxml/1"
-           xmlns="http://javafx.com/javafx/2.2">
-    <VBox maxWidth="800" maxHeight="500" spacing="10">
+<?import com.jfoenix.controls.JFXTreeTableView?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<StackPane fx:id="root" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1">
+
+    <VBox maxHeight="500" maxWidth="800" spacing="10">
+
         <children>
+
             <HBox alignment="CENTER">
-                <Label styleClass="title-label">已征订教材记录</Label>
-                <Label styleClass="title-label" fx:id="treeTableViewCount" minWidth="80"></Label>
-                <JFXButton fx:id="treeTableViewAdd" styleClass="my-jfx-btn" text="添加教材"/>
-                <JFXButton fx:id="treeTableViewRemove" styleClass="my-jfx-btn"
-                           text="刪除教材"/>
+
+                <Label styleClass="title-label">考研学习进度</Label>
+
+                <Label fx:id="treeTableViewCount" minWidth="80" styleClass="title-label" />
+
+                <JFXButton fx:id="treeTableViewAdd" styleClass="my-jfx-btn" text="添加进度" visible="true">
+               <font>
+                  <Font size="10.0" />
+               </font></JFXButton>
+            <Label minWidth="19.0" prefHeight="15.0" prefWidth="19.0" styleClass="title-label" />
+
+                <JFXButton fx:id="treeTableViewRemove" prefWidth="57.0" styleClass="my-jfx-btn" text="刪除进度" visible="true">
+               <font>
+                  <Font size="10.0" />
+               </font></JFXButton>
+
                 <StackPane HBox.hgrow="ALWAYS">
-                    <StackPane StackPane.alignment="CENTER_RIGHT" maxWidth="200">
-                        <JFXTextField fx:id="searchField" promptText="Search..."></JFXTextField>
+
+                    <StackPane maxWidth="200" StackPane.alignment="CENTER_RIGHT">
+
+                        <JFXTextField fx:id="searchField" focusColor="#669966" promptText="科目搜索..." />
                     </StackPane>
                 </StackPane>
             </HBox>
+
             <JFXTreeTableView fx:id="treeTableView">
+
                 <columns>
-                    <JFXTreeTableColumn fx:id="bnoColumn"
-                                        minWidth="133" text="教材编号" prefWidth="133"
-                                        resizable="false"></JFXTreeTableColumn>
-                    <JFXTreeTableColumn fx:id="bNameColumn"
-                                        minWidth="133" text="教材名" prefWidth="133"
-                                        resizable="false"></JFXTreeTableColumn>
-                    <JFXTreeTableColumn fx:id="tnoColumn" text="班主任教师号"
-                                        minWidth="133" resizable="false"></JFXTreeTableColumn>
-                    <JFXTreeTableColumn fx:id="bSubNumColumn" text="征订数量"
-                                        minWidth="133" resizable="false"></JFXTreeTableColumn>
+
+                    <JFXTreeTableColumn fx:id="subNameColumn" minWidth="133" prefWidth="133" resizable="false" text="科目名称" />
+
+                    <JFXTreeTableColumn fx:id="materialColumn" minWidth="133" prefWidth="133" resizable="false" text="参考资料" />
+
+                    <JFXTreeTableColumn fx:id="chapterNameColumn" minWidth="133" resizable="false" text="章节名称" />
+
+                    <JFXTreeTableColumn fx:id="chapterIndexColumn" minWidth="133" resizable="false" text="章节序号" />
+
+                    <JFXTreeTableColumn fx:id="specialColumn" minWidth="133" resizable="false" text="报考专业 " />
+
+                    <JFXTreeTableColumn fx:id="schoolColumn" minWidth="133" resizable="false" text="报考学校 " />
                 </columns>
             </JFXTreeTableView>
         </children>
     </VBox>
 </StackPane>
-

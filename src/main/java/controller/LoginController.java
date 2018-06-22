@@ -259,10 +259,8 @@ public class LoginController implements Initializable {
                 showDialog("提示", "用户名或密码不能为空!");
                 return;
             } else {
-                changeToMainStage();
-
                 //先仅仅设置用户名,查询是否唯一
-                /*Student student = new Student();
+                Student student = new Student();
                 student.setStudent_no(username);
                 student.query(Student.class, new JDBCDao.QueryListener<Student>() {
                     @Override
@@ -298,7 +296,7 @@ public class LoginController implements Initializable {
                     public void onFailed(Exception e) {
 
                     }
-                });*/
+                });
             }
         });
 

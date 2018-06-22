@@ -11,6 +11,7 @@ import javax.annotation.PostConstruct;
 import io.datafx.controller.ViewController;
 import io.datafx.controller.flow.Flow;
 import io.datafx.controller.flow.FlowHandler;
+import io.datafx.controller.flow.container.ContainerAnimations;
 import io.datafx.controller.flow.context.FXMLViewFlowContext;
 import io.datafx.controller.flow.context.ViewFlowContext;
 import javafx.animation.Transition;
@@ -79,13 +80,16 @@ public class MainController {
             innerFlow = new Flow(ProgressGridController.class);
         }
 
-        final FlowHandler flowHandler = innerFlow.createHandler(context);
+        /*final FlowHandler flowHandler = innerFlow.createHandler(context);
         context.register("ContentFlow", innerFlow);
         context.register("ContentFlowHandler", flowHandler);
         final Duration containerAnimationDuration = Duration.millis(320);
-        drawer.setContent(flowHandler.start(new ExtendedAnimatedFlowContainer(containerAnimationDuration)));
+        drawer.setContent(flowHandler.start(new ExtendedAnimatedFlowContainer(containerAnimationDuration, ContainerAnimations.SWIPE_LEFT)));
         context.register("ContentPane", drawer.getContent().get(0));
 
+        Flow sideMenuFlow = new Flow(SideMenuController.class);
+        final FlowHandler sideMenuFlowHandler = sideMenuFlow.createHandler(context);
+        drawer.setSidePane(sideMenuFlowHandler.start(new ExtendedAnimatedFlowContainer(containerAnimationDuration, ContainerAnimations.SWIPE_LEFT)));*/
 
     }
 }
