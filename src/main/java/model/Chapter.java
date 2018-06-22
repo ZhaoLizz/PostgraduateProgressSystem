@@ -5,7 +5,7 @@ import main.java.db.JDBCObject;
 public class Chapter extends JDBCObject {
     private String subject_name;
     private String chapter_name;
-    private int chatper_index;
+    private Integer chatper_index;
 
     public String getSubject_name() {
         return subject_name;

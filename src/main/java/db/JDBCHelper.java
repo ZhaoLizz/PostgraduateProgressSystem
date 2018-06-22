@@ -212,7 +212,6 @@ public class JDBCHelper {
         List<Object> params = new ArrayList<>();
         Field[] fields = baseDao.getDeclaredFields();
 
-        int testindex = 1;
 
         //通过参数对象的域构造查询条件
         for (int i = 0; i < fields.length; i++) {
@@ -223,7 +222,6 @@ public class JDBCHelper {
                 sql += fields[i].getName() + "=? and ";
                 params.add(val);
 
-                System.out.println("val " + (testindex++) + " " + val);
             }
         }
 
@@ -237,6 +235,11 @@ public class JDBCHelper {
 //            params.clear();
 //            params.add("123");
 
+            System.out.println(sql);
+        } else {
+            //处理查询全部行的条件
+            String table = condition.getClass().getName();
+            sql = "select * from " + table.substring(table.lastIndexOf(".") + 1, table.length());
             System.out.println(sql);
         }
 
