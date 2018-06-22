@@ -80,7 +80,8 @@ public class MainController {
             innerFlow = new Flow(ProgressGridController.class);
         }
 
-        /*final FlowHandler flowHandler = innerFlow.createHandler(context);
+
+        final FlowHandler flowHandler = innerFlow.createHandler(context);
         context.register("ContentFlow", innerFlow);
         context.register("ContentFlowHandler", flowHandler);
         final Duration containerAnimationDuration = Duration.millis(320);
@@ -89,7 +90,7 @@ public class MainController {
 
         Flow sideMenuFlow = new Flow(SideMenuController.class);
         final FlowHandler sideMenuFlowHandler = sideMenuFlow.createHandler(context);
-        drawer.setSidePane(sideMenuFlowHandler.start(new ExtendedAnimatedFlowContainer(containerAnimationDuration, ContainerAnimations.SWIPE_LEFT)));*/
+        drawer.setSidePane(sideMenuFlowHandler.start(new ExtendedAnimatedFlowContainer(containerAnimationDuration, ContainerAnimations.SWIPE_LEFT)));
 
     }
 }

@@ -5,8 +5,12 @@ import com.jfoenix.controls.JFXDialogLayout;
 import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.JFXTreeTableColumn;
 import com.jfoenix.controls.JFXTreeTableView;
+import com.jfoenix.controls.cells.editors.TextFieldEditorBuilder;
+import com.jfoenix.controls.cells.editors.base.GenericEditableTreeTableCell;
 import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Function;
 
 import javax.annotation.PostConstruct;
@@ -20,6 +24,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TreeTableColumn;
 import javafx.scene.layout.StackPane;
+import main.java.db.JDBCDao;
+import main.java.model.Progress;
 
 @ViewController(value = "../../resources/layout/layout_progress_grid.fxml")
 public class ProgressGridController {
@@ -78,10 +84,6 @@ public class ProgressGridController {
             return chapterIndex;
         }
 
-        public SimpleIntegerProperty chapterIndexProperty() {
-            return chapterIndex;
-        }
-
         public StringProperty materialProperty() {
             return material;
         }
@@ -92,6 +94,30 @@ public class ProgressGridController {
 
         public StringProperty schoolProperty() {
             return school;
+        }
+
+        public void setSubName(String subName) {
+            this.subName.set(subName);
+        }
+
+        public void setChapterName(String chapterName) {
+            this.chapterName.set(chapterName);
+        }
+
+        public void setChapterIndex(int chapterIndex) {
+            this.chapterIndex.set(chapterIndex);
+        }
+
+        public void setMaterial(String material) {
+            this.material.set(material);
+        }
+
+        public void setSpecial(String special) {
+            this.special.set(special);
+        }
+
+        public void setSchool(String school) {
+            this.school.set(school);
         }
     }
 
@@ -106,8 +132,54 @@ public class ProgressGridController {
     }
 
     private void setupEditableTableView() {
+        /*final StringProperty subName;
+        final StringProperty chapterName;
+        final SimpleIntegerProperty chapterIndex;
+        final StringProperty material;
+        final StringProperty special;
+        final StringProperty school;*/
         setupCellValueFactory(subNameColumn, ProgressMessage::subNameProperty);
+        setupCellValueFactory(chapterNameColumn, ProgressMessage::chapterNameProperty);
+        setupCellValueFactory(chapterIndexColumn, p -> p.chapterIndex.asObject());
+        setupCellValueFactory(materialColumn, ProgressMessage::materialProperty);
+        setupCellValueFactory(specialColumn, ProgressMessage::specialProperty);
+        setupCellValueFactory(schoolColumn, ProgressMessage::schoolProperty);
 
+        //设置编辑功能
+        subNameColumn.setCellFactory((TreeTableColumn<ProgressMessage,String> param)->{
+            return new GenericEditableTreeTableCell<>(new TextFieldEditorBuilder());
+        });
+        subNameColumn.setOnEditCommit((TreeTableColumn.CellEditEvent<ProgressMessage,String> t) ->{
+            t.getTreeTableView()
+                    .getTreeItem(t.getTreeTablePosition().getRow())
+                    .getValue().subName.set(t.getNewValue());
+        });
+
+
+    }
+
+    private List<ProgressMessage> fetchProgressMessage() {
+        List<ProgressMessage> list = new ArrayList<>();
+        Progress progress = new Progress();
+        progress.setChapter_name("*");
+        progress.query(Progress.class, new JDBCDao.QueryListener<Progress>() {
+            @Override
+            public void onSucceed(List<Progress> result) {
+                System.out.println(result.size());
+                System.out.println(result.get(0));
+            }
+
+            @Override
+            public void onFailed(Exception e) {
+
+            }
+        });
+        return null;
+    }
+
+    public static void main(String[] args) {
+        ProgressGridController controller = new ProgressGridController();
+        controller.fetchProgressMessage();
     }
 
 

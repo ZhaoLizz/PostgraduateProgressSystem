@@ -211,6 +211,9 @@ public class JDBCHelper {
         Class<?> baseDao = condition.getClass();
         List<Object> params = new ArrayList<>();
         Field[] fields = baseDao.getDeclaredFields();
+
+        int testindex = 1;
+
         //通过参数对象的域构造查询条件
         for (int i = 0; i < fields.length; i++) {
             fields[i].setAccessible(true);
@@ -219,6 +222,8 @@ public class JDBCHelper {
             if (val != null) {
                 sql += fields[i].getName() + "=? and ";
                 params.add(val);
+
+                System.out.println("val " + (testindex++) + " " + val);
             }
         }
 
