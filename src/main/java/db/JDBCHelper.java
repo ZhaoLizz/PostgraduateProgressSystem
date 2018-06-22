@@ -391,16 +391,19 @@ public class JDBCHelper {
 
     public static void main(String[] args) {
         Student student = new Student();
-        student.setStudent_name("Morty");
+        student.setStudent_name("Rick");
+        student.setStudent_special("Science");
         student.query(Student.class, new JDBCDao.QueryListener<Student>() {
             @Override
             public void onSucceed(List<Student> result) {
-
+                for (Student s : result) {
+                    System.out.println(s);
+                }
             }
 
             @Override
             public void onFailed(Exception e) {
-
+                e.printStackTrace();
             }
         });
     }

@@ -3,10 +3,18 @@ package main.java.controller;
 import com.jfoenix.controls.JFXAlert;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXDecorator;
-import com.jfoenix.controls.JFXDialog;
 import com.jfoenix.controls.JFXDialogLayout;
+import com.jfoenix.controls.JFXPasswordField;
+import com.jfoenix.controls.JFXTextField;
+import com.jfoenix.svg.SVGGlyph;
+
+import java.net.URL;
+import java.util.List;
+import java.util.Random;
+import java.util.ResourceBundle;
 
 import io.datafx.controller.flow.Flow;
+import io.datafx.controller.flow.FlowException;
 import io.datafx.controller.flow.container.DefaultFlowContainer;
 import io.datafx.controller.flow.context.FXMLViewFlowContext;
 import io.datafx.controller.flow.context.ViewFlowContext;
@@ -14,34 +22,31 @@ import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Cursor;
 import javafx.scene.Scene;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Control;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
 import javafx.stage.Modality;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import main.java.app.MainApp;
 import main.java.db.JDBCDao;
+import main.java.model.CurUser;
 import main.java.model.Student;
-import main.java.model.User;
 import main.java.utils.TextUtils;
 import main.java.utils.Toast;
-
-import java.net.URL;
-import java.util.List;
-import java.util.Random;
-import java.util.ResourceBundle;
 
 public class LoginController implements Initializable {
 
@@ -177,7 +182,6 @@ public class LoginController implements Initializable {
      * @throws Exception
      */
     public void loginButtonAction(ActionEvent actionEvent) throws Exception {
-        //todo 验证登录
         String username = usernameTextField.getText();
         String password = passwordTextField.getText();
         if (TextUtils.isEmpty(username) || TextUtils.isEmpty(password)) {
@@ -195,10 +199,11 @@ public class LoginController implements Initializable {
                         System.out.println(database);
                         System.out.println("登录成功");
                         Toast.show(borderPane, "登陆成功!");
-                        User user = User.getInstance();
-                        user.setStudent_is_manager(database.getStudent_is_manager() == 1);
-                        user.setStudent_no(database.getStudent_no());
+                        CurUser curUser = CurUser.getInstance();
+                        curUser.setStudent_is_manager(database.getStudent_is_manager() == 1);
+                        curUser.setStudent_no(database.getStudent_no());
 
+                        changeToMainStage();
                     } else {
                         showDialog("提示", "用户名或密码不正确!");
                     }
@@ -212,10 +217,102 @@ public class LoginController implements Initializable {
         }
     }
 
-    private void changeStage(boolean isManager) {
-        if (isManager) {
-            //TODO manager stage
-        } else {
+    @FXML
+    public void registerButtonAction() {
+        //创建注册的dialog
+        JFXAlert alert = new JFXAlert((Stage) borderPane.getScene().getWindow());
+        alert.initModality(Modality.APPLICATION_MODAL);
+        alert.setOverlayClose(true);
+        JFXDialogLayout layout = new JFXDialogLayout();
+        Label label = new Label("注册");
+        label.setFont(Font.font(Font.getFamilies().get(3)));
+        layout.setHeading(label);
+
+        JFXTextField usernameTextField = new JFXTextField();
+        usernameTextField.setPromptText("用户名");
+        JFXPasswordField passwordTextField = new JFXPasswordField();
+        passwordTextField.setPromptText("密码");
+        JFXTextField studentnameTextField = new JFXTextField();
+        studentnameTextField.setPromptText("姓名");
+        JFXTextField targetTextField = new JFXTextField();
+        targetTextField.setPromptText("目标院校");
+        JFXTextField specialTextField = new JFXTextField();
+        specialTextField.setPromptText("考研专业");
+
+        VBox vBox = new VBox(usernameTextField, passwordTextField, studentnameTextField, targetTextField, specialTextField);
+        vBox.setSpacing(20);
+
+        JFXButton commitBtn = new JFXButton("注册");
+        commitBtn.getStyleClass().add("dialog-accept");
+        JFXButton cancelBtn = new JFXButton("取消");
+        cancelBtn.getStyleClass().add("dialog-accept");
+        cancelBtn.setOnAction(event1 -> alert.hideWithAnimation());
+        //注册逻辑
+        commitBtn.setOnAction(event -> {
+            String username = usernameTextField.getText();
+            String password = passwordTextField.getText();
+            String studentName = studentnameTextField.getText();
+            String target = targetTextField.getText();
+            String special = specialTextField.getText();
+
+            if (TextUtils.isEmpty(username) || TextUtils.isEmpty(password)) {
+                showDialog("提示", "用户名或密码不能为空!");
+                return;
+            } else {
+                changeToMainStage();
+
+                //先仅仅设置用户名,查询是否唯一
+                /*Student student = new Student();
+                student.setStudent_no(username);
+                student.query(Student.class, new JDBCDao.QueryListener<Student>() {
+                    @Override
+                    public void onSucceed(List<Student> result) {
+                        if (result == null || result.size() == 0) {
+                            System.out.println("用户名合法,执行save()");
+                            student.setStudent_pw(password);
+                            student.setStudent_name(studentName);
+                            student.setStudent_target(target);
+                            student.setStudent_special(special);
+                            student.save(new JDBCDao.SaveListerner() {
+                                @Override
+                                public void onSucceed() {
+                                    CurUser curUser = CurUser.getInstance();
+                                    curUser.setStudent_no(username);
+                                    showDialog("提示","注册成功");
+                                    System.out.println("注册保存成功");
+                                    changeToMainStage();
+                                }
+
+                                @Override
+                                public void onFailed(Exception e) {
+                                    e.printStackTrace();
+                                }
+                            });
+
+                        } else {
+                            showDialog("提示", "该用户名已存在!");
+                        }
+                    }
+
+                    @Override
+                    public void onFailed(Exception e) {
+
+                    }
+                });*/
+            }
+        });
+
+        layout.setActions(commitBtn, cancelBtn);
+        layout.setBody(vBox);
+        layout.setMaxHeight(200);
+        layout.setMaxWidth(300);
+        alert.setContent(layout);
+        alert.show();
+    }
+
+    private void changeToMainStage() {
+        try {
+            //关闭登录界面的初始窗口
             Stage primaryStage = MainApp.getPrimaryStage();
             primaryStage.close();
             //新建窗口
@@ -225,8 +322,28 @@ public class LoginController implements Initializable {
             flowContext = new ViewFlowContext();
             flowContext.register("Stage", stage);
             JFXDecorator decorator = new JFXDecorator(stage, container.getView());
+            Flow flow = new Flow(MainController.class);
+            flow.createHandler(flowContext).start(container);
+            decorator.setCustomMaximize(true);
+            decorator.setGraphic(new SVGGlyph(""));
+            double width = 800;
+            double height = 600;
+            Rectangle2D bounds = Screen.getScreens().get(0).getBounds();
+            width = bounds.getWidth() / 2.5;
+            height = bounds.getHeight() / 1.35;
 
+            Scene scene = new Scene(decorator, width, height);
+            final ObservableList<String> stylesheets = scene.getStylesheets();
+            stylesheets.addAll(MainApp.class.getResource("../../resources/css/jfoenix-design.css").toExternalForm(),
+                    MainApp.class.getResource("../../resources/css/jfoenix-main-demo.css").toExternalForm());
+            stage.setScene(scene);
+            stage.show();
+
+        } catch (FlowException e) {
+            e.printStackTrace();
         }
+
+
     }
 
     /**
@@ -259,8 +376,8 @@ public class LoginController implements Initializable {
         JFXDialogLayout layout = new JFXDialogLayout();
         layout.setHeading(new Label(title));
         layout.setBody(new Label(body));
-        layout.setMaxHeight(Control.USE_PREF_SIZE);
-        layout.setMaxWidth(Control.USE_PREF_SIZE);
+        layout.setMaxHeight(200);
+        layout.setMaxWidth(300);
 
 
         JFXButton closeButton = new JFXButton("确定");

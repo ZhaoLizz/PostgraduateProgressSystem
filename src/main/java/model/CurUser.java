@@ -1,23 +1,26 @@
 package main.java.model;
 
-public class User {
-    private static volatile User sUser;
+/**
+ * 单例对象用于存放当前登录用户的实例
+ */
+public class CurUser {
+    private static volatile CurUser sCurUser;
     private String student_no;
-    private boolean student_is_manager;
+    private boolean student_is_manager = false;
 
 
-    private User() {
+    private CurUser() {
     }
 
-    public static User getInstance() {
-        if (null == sUser) {
-            synchronized (User.class) {
-                if (null == sUser) {
-                    sUser = new User();
+    public static CurUser getInstance() {
+        if (null == sCurUser) {
+            synchronized (CurUser.class) {
+                if (null == sCurUser) {
+                    sCurUser = new CurUser();
                 }
             }
         }
-        return sUser;
+        return sCurUser;
     }
 
     public String getStudent_no() {
