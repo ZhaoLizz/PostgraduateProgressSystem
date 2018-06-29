@@ -320,6 +320,7 @@ public class LoginController implements Initializable {
             flowContext = new ViewFlowContext();
             flowContext.register("Stage", stage);
             JFXDecorator decorator = new JFXDecorator(stage, container.getView());
+
             Flow flow = new Flow(MainController.class);
             flow.createHandler(flowContext).start(container);
             decorator.setCustomMaximize(true);
@@ -385,5 +386,7 @@ public class LoginController implements Initializable {
         alert.setContent(layout);
         alert.show();
     }
+
+
 
 }

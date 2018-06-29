@@ -5,26 +5,33 @@ import com.jfoenix.controls.JFXDialogLayout;
 import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.JFXTreeTableColumn;
 import com.jfoenix.controls.JFXTreeTableView;
+import com.jfoenix.controls.RecursiveTreeItem;
 import com.jfoenix.controls.cells.editors.TextFieldEditorBuilder;
 import com.jfoenix.controls.cells.editors.base.GenericEditableTreeTableCell;
 import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 
 import javax.annotation.PostConstruct;
 
 import io.datafx.controller.ViewController;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TreeTableColumn;
 import javafx.scene.layout.StackPane;
 import main.java.db.JDBCDao;
+import main.java.db.JDBCHelper;
 import main.java.model.Chapter;
 import main.java.model.Progress;
 import main.java.model.Student;
@@ -53,21 +60,21 @@ public class ProgressGridController {
     @FXML
     private JFXTextField searchField;
 
+    private static final String PREFIX = "( ";
+    private static final String POSTFIX = " )";
+
     @PostConstruct
     public void init() {
-
+        setupEditableTableView();
     }
 
     static final class ProgressMessage extends RecursiveTreeObject<ProgressMessage> {
-         StringProperty subName;
-         StringProperty chapterName;
-         SimpleIntegerProperty chapterIndex;
-         StringProperty material;
-         StringProperty special;
-         StringProperty school;
-
-        public ProgressMessage() {
-        }
+        StringProperty subName;
+        StringProperty chapterName;
+        SimpleIntegerProperty chapterIndex;
+        StringProperty material;
+        StringProperty special;
+        StringProperty school;
 
         public ProgressMessage(String subName, String chapterName, int chapterIndex, String material, String special, String school) {
             this.subName = new SimpleStringProperty(subName);
@@ -102,30 +109,6 @@ public class ProgressGridController {
             return school;
         }
 
-        public void setSubName(String subName) {
-            this.subName.set(subName);
-        }
-
-        public void setChapterName(String chapterName) {
-            this.chapterName.set(chapterName);
-        }
-
-        public void setChapterIndex(int chapterIndex) {
-            this.chapterIndex.set(chapterIndex);
-        }
-
-        public void setMaterial(String material) {
-            this.material.set(material);
-        }
-
-        public void setSpecial(String special) {
-            this.special.set(special);
-        }
-
-        public void setSchool(String school) {
-            this.school.set(school);
-        }
-
         @Override
         public String toString() {
             return "ProgressMessage{" +
@@ -158,6 +141,7 @@ public class ProgressGridController {
         setupCellValueFactory(schoolColumn, ProgressMessage::schoolProperty);
 
         //设置编辑功能
+        //科目名称
         subNameColumn.setCellFactory((TreeTableColumn<ProgressMessage, String> param) -> {
             return new GenericEditableTreeTableCell<>(new TextFieldEditorBuilder());
         });
@@ -165,87 +149,82 @@ public class ProgressGridController {
             t.getTreeTableView()
                     .getTreeItem(t.getTreeTablePosition().getRow())
                     .getValue().subName.set(t.getNewValue());
+
+            String value = t.getTreeTableView()
+                    .getTreeItem(t.getTreeTablePosition().getRow())
+                    .getValue().subName.toString();
+            System.out.println(value);
         });
+        //章节名称
+        chapterNameColumn.setCellFactory((TreeTableColumn<ProgressMessage, String> param )-> {
+            return new GenericEditableTreeTableCell<>(new TextFieldEditorBuilder());
+        });
+        chapterNameColumn.setOnEditCommit((TreeTableColumn.CellEditEvent<ProgressMessage,String> t) ->{
+            t.getTreeTableView()
+                    .getTreeItem(t.getTreeTablePosition().getRow())
+                    .getValue().chapterName.set(t.getNewValue());
+        });
+        //TODO 剩余的几行事件处理
 
+        final ObservableList<ProgressMessage> progressMessagesList = fetchProgressMessage();
+        treeTableView.setRoot(new RecursiveTreeItem<>(progressMessagesList, RecursiveTreeObject::getChildren));
+        treeTableView.setShowRoot(false);
+        treeTableView.setEditable(true);
+        treeTableViewCount.textProperty()
+                .bind(Bindings.createStringBinding(() ->
+                                PREFIX + treeTableView.getCurrentItemsCount() + POSTFIX,
+                        treeTableView.currentItemsCountProperty()));
 
+        //TODO 搜索框处理
+//        searchField.textProperty().addListener();
     }
 
-    private List<ProgressMessage> fetchProgressMessage() {
-        List<ProgressMessage> list = new ArrayList<>();
-        ProgressMessage progressMessage = new ProgressMessage();
-        //查询全部的Progress表数据
-        Progress progress = new Progress();
-        progress.query(Progress.class, new JDBCDao.QueryListener<Progress>() {
-            @Override
-            public void onSucceed(List<Progress> result) {
-                for (Progress p : result) {
+    private ObservableList<ProgressMessage> fetchProgressMessage() {
+        final ObservableList<ProgressMessage> list = FXCollections.observableArrayList();
 
-                    //遍历每条查询到的Progress结果,在这个结果的基础上派生出学生, 章节->科目条目
-                    progressMessage.setSubName(p.getSubject_name());
-                    progressMessage.setChapterName(p.getChapter_name());
+        //连接查询
+        JDBCHelper helper = JDBCHelper.getInstance();
+        List<Map<String, Object>> queryResult = null;
+        String sql = "select Progress.subject_name,Progress.chapter_name,Chapter.chapter_index,\n" +
+                "  Progress.student_no,Subject.subject_refer_material from Subject,Chapter,Progress\n" +
+                "where  Subject.subject_name = Chapter.subject_name and Chapter.chapter_name = Progress.chapter_name\n" +
+                "and Chapter.subject_name = Progress.subject_name";
+        try {
+            queryResult = helper.findMlutiResult(sql, null);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
-                    Chapter chapter = new Chapter();
-                    chapter.setChapter_name(p.getChapter_name());
-                    chapter.setSubject_name(p.getSubject_name());
-                    chapter.query(Chapter.class, new JDBCDao.QueryListener<Chapter>() {
-                        @Override
-                        public void onSucceed(List<Chapter> result) {
-                            System.out.println(result.size());
-                            Chapter chapterData = result.get(0);
-                            progressMessage.setChapterIndex(chapterData.getChatper_index());
+        //根据查询结果构造ProgressMessage列表
+        for (Map<String, Object> map : queryResult) {
 
-                            //由章节派生出科目
-                            Subject subject = new Subject();
-                            subject.setSubject_name(chapterData.getSubject_name());
-                            subject.query(Subject.class, new JDBCDao.QueryListener<Subject>() {
-                                @Override
-                                public void onSucceed(List<Subject> result) {
-                                    System.out.println(result.get(0));
+            String subject_name = (String) map.get("subject_name");
+            String chapter_name = (String) map.get("chapter_name");
+            int chapter_index = (int) map.get("chapter_index");
+            String subject_refer_material = (String) map.get("subject_refer_material");
+            final String[] student_target = {null};
+            final String[] student_special = {null};
 
-                                    progressMessage.setMaterial(result.get(0).getSubject_refer_material());
-                                }
-
-                                @Override
-                                public void onFailed(Exception e) {
-                                }
-                            });
-                        }
-
-                        @Override
-                        public void onFailed(Exception e) {
-e.printStackTrace();
-                        }
-                    });
-
-                    //根据Progress表的学生用户名字段查询专业,学校
-                    Student student = new Student();
-                    student.setStudent_no(p.getStudent_no());
-                    student.query(Student.class, new JDBCDao.QueryListener<Student>() {
-                        @Override
-                        public void onSucceed(List<Student> result) {
-                            System.out.println(result.get(0));
-                            progressMessage.setSchool(result.get(0).getStudent_no());
-                            progressMessage.setSpecial(result.get(0).getStudent_special());
-                        }
-                        @Override
-                        public void onFailed(Exception e) {
-                            e.printStackTrace();
-
-                        }
-                    });
-
-                    System.out.println("here");
-                    System.out.println(progressMessage);
+            String student_no = (String) map.get("student_no");
+            Student student = new Student();
+            student.setStudent_no(student_no);
+            student.query(Student.class, new JDBCDao.QueryListener<Student>() {
+                @Override
+                public void onSucceed(List<Student> result) {
+                    student_target[0] = result.get(0).getStudent_target();
+                    student_special[0] = result.get(0).getStudent_special();
                 }
 
-            }
+                @Override
+                public void onFailed(Exception e) {
 
-            @Override
-            public void onFailed(Exception e) {
-                e.printStackTrace();
-            }
-        });
-        return null;
+                }
+            });
+            ProgressMessage progressMessage = new ProgressMessage(subject_name, chapter_name, chapter_index, subject_refer_material, student_target[0], student_special[0]);
+            list.add(progressMessage);
+        }
+
+        return list;
     }
 
     public static void main(String[] args) {

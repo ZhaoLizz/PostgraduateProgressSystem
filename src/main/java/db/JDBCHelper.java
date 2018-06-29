@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import jdk.nashorn.internal.scripts.JD;
 import main.java.model.Student;
 
 
@@ -398,7 +399,7 @@ public class JDBCHelper {
     }
 
     public static void main(String[] args) {
-        Student student = new Student();
+        /*Student student = new Student();
         student.setStudent_name("Rick");
         student.setStudent_special("Science");
         student.query(Student.class, new JDBCDao.QueryListener<Student>() {
@@ -413,6 +414,7 @@ public class JDBCHelper {
             public void onFailed(Exception e) {
                 e.printStackTrace();
             }
-        });
+        });*/
     }
+
 }

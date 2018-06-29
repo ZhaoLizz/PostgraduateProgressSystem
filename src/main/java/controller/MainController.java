@@ -26,6 +26,7 @@ import main.java.utils.Statics;
 
 @ViewController(value = "../../resources/layout/layout_main.fxml")
 public class MainController {
+
     @FXMLViewFlowContext
     private ViewFlowContext context;
 
@@ -68,6 +69,7 @@ public class MainController {
             }
         });
 
+        context = new ViewFlowContext();
         Flow innerFlow = null;
         boolean isManager = CurUser.getInstance().isStudent_is_manager();
         //TODO 设置主布局内的布局
@@ -80,17 +82,22 @@ public class MainController {
             innerFlow = new Flow(ProgressGridController.class);
         }
 
+        try {
+            final FlowHandler flowHandler = innerFlow.createHandler(context);
+            context.register("ContentFlow", innerFlow);
+            context.register("ContentFlowHandler", flowHandler);
 
-        final FlowHandler flowHandler = innerFlow.createHandler(context);
-        context.register("ContentFlow", innerFlow);
-        context.register("ContentFlowHandler", flowHandler);
-        final Duration containerAnimationDuration = Duration.millis(320);
-        drawer.setContent(flowHandler.start(new ExtendedAnimatedFlowContainer(containerAnimationDuration, ContainerAnimations.SWIPE_LEFT)));
-        context.register("ContentPane", drawer.getContent().get(0));
-
-        Flow sideMenuFlow = new Flow(SideMenuController.class);
-        final FlowHandler sideMenuFlowHandler = sideMenuFlow.createHandler(context);
-        drawer.setSidePane(sideMenuFlowHandler.start(new ExtendedAnimatedFlowContainer(containerAnimationDuration, ContainerAnimations.SWIPE_LEFT)));
+            final Duration containerAnimationDuration = Duration.millis(320);
+            drawer.setContent(flowHandler.start(new ExtendedAnimatedFlowContainer(containerAnimationDuration, ContainerAnimations.SWIPE_LEFT)));
+            context.register("ContentPane", drawer.getContent().get(0));
+            //侧边栏滑动
+            Flow sideMenuFlow = new Flow(SideMenuController.class);
+            final FlowHandler sideMenuFlowHandler = sideMenuFlow.createHandler(context);
+            drawer.setSidePane(sideMenuFlowHandler.start(new ExtendedAnimatedFlowContainer(containerAnimationDuration, ContainerAnimations.SWIPE_LEFT)));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
+
 }

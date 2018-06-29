@@ -15,21 +15,11 @@ import javafx.scene.control.Label;
 public class SideMenuController {
     @FXMLViewFlowContext
     private ViewFlowContext context;
+
     @FXML
     @ActionTrigger("labelOne")
     private Label labelOne;
-    @FXML
-    @ActionTrigger("labelTwo")
-    private Label labelTwo;
-    @FXML
-    @ActionTrigger("labelThree")
-    private Label labelThree;
-    @FXML
-    @ActionTrigger("labelFour")
-    private Label labelFour;
-    @FXML
-    @ActionTrigger("labelFive")
-    private Label labelFive;
+
 
     @FXML
     private JFXListView<Label> sideList;
