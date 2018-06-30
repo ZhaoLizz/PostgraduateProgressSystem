@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import com.jfoenix.controls.JFXTreeTableColumn?>
+<?import com.jfoenix.controls.JFXTreeTableView?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+    <!--stylesheets="@../css/jfoenix-components.css"-->
+<StackPane fx:id="root"  xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.java.controller.StudentGridController">
+
+    <VBox maxHeight="500" maxWidth="800" spacing="10">
+
+        <children>
+
+            <HBox alignment="CENTER">
+
+                <Label styleClass="title-label">学生信息</Label>
+
+                <Label fx:id="treeTableViewCount" minWidth="80" styleClass="title-label" />
+
+                <JFXButton fx:id="treeTableViewAdd" styleClass="my-jfx-btn" text="添加学生">
+
+                    <font>
+
+                        <Font size="10.0" />
+                    </font>
+                </JFXButton>
+
+                <Label minWidth="19.0" prefHeight="15.0" prefWidth="19.0" styleClass="title-label" />
+
+                <JFXButton fx:id="treeTableViewRemove" prefHeight="39.0" prefWidth="74.0" styleClass="my-jfx-btn" text="刪除学生" visible="true">
+
+                    <font>
+
+                        <Font size="10.0" />
+                    </font>
+                </JFXButton>
+
+                <StackPane HBox.hgrow="ALWAYS">
+
+                    <StackPane maxWidth="200" StackPane.alignment="CENTER_RIGHT">
+
+                        <JFXTextField fx:id="searchField" focusColor="#669966" promptText="搜索..." />
+                    </StackPane>
+                </StackPane>
+            </HBox>
+
+            <JFXTreeTableView fx:id="treeTableView">
+
+                <columns>
+
+                    <JFXTreeTableColumn fx:id="noColumn" minWidth="133" prefWidth="133" resizable="false" text="用户名" />
+
+                    <JFXTreeTableColumn fx:id="nameColumn" minWidth="133" prefWidth="133" resizable="false" text="学生姓名" />
+
+                    <JFXTreeTableColumn fx:id="pwColumn" minWidth="133" resizable="false" text="密码" />
+
+                    <JFXTreeTableColumn fx:id="targetColumn" minWidth="133" resizable="false" text="目标院校" />
+
+                    <JFXTreeTableColumn fx:id="specialColumn" minWidth="133" resizable="false" text="报考专业" />
+
+                    <JFXTreeTableColumn fx:id="isManagerColumn" minWidth="133" resizable="false" text="用户身份" />
+                </columns>
+            </JFXTreeTableView>
+        </children>
+    </VBox>
+</StackPane>

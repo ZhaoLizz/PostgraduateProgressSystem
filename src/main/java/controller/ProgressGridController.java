@@ -123,9 +123,9 @@ public class ProgressGridController {
 
         @Override
         public String toString() {
-            return "ProgressMessage{" +
-                    "subName=" + subName +
-                    ", chapterName=" + chapterName +
+            return "StudentFX{" +
+                    "student_name=" + subName +
+                    ", student_pw=" + chapterName +
                     ", chapterIndex=" + chapterIndex +
                     ", material=" + material +
                     ", special=" + special +
