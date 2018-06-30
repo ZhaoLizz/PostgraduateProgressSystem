@@ -70,7 +70,8 @@ public class MainController {
         context = new ViewFlowContext();
         Flow innerFlow = null;
         boolean isManager = CurUser.getInstance().isStudent_is_manager();
-        //TODO 设置主布局内的布局
+
+        //设置默认显示的布局
         if (isManager) {
             currentUserType.setText("管理端");
             innerFlow = new Flow(ProgressGridController.class);

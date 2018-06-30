@@ -19,7 +19,6 @@ import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import main.java.model.CurUser;
-import main.java.utils.Statics;
 
 @ViewController(value = "../../resources/layout/layout_slide_menu.fxml")
 public class SlideMenuController {
@@ -45,25 +44,26 @@ public class SlideMenuController {
     @FXML
     private JFXListView<Label> sideList;
 
-    private static String[] slideContentTitle;
-    private static Class[] slideContentController;
+    private static String[] sideContentTitle;
+    private static Class[] sideContentController;
 
     @PostConstruct
     public void init() {
         // is manager
         if (CurUser.getInstance().isStudent_is_manager()) {
-            slideContentTitle = new String[]{"考研进度"};
-            slideContentController = new Class[]{ProgressGridController.class};
+            sideContentTitle = new String[]{"考研进度"};
+            sideContentController = new Class[]{ProgressGridController.class};
+
         } else {
             //TODO 学生端侧边栏
-//            slideContentTitle = new String[]{"考研进度"};
-//            slideContentController = new Class[]{ProgressGridController.class};
+//            sideContentTitle = new String[]{"考研进度"};
+//            sideContentController = new Class[]{ProgressGridController.class};
         }
-        labelOne.setText(slideContentTitle[0]);
-//        labelTwo.setText(slideContentTitle[1]);
-//        labelThree.setText(slideContentTitle[2]);
-//        labelFour.setText(slideContentTitle[3]);
-//        labelFive.setText(slideContentTitle[4]);
+        labelOne.setText(sideContentTitle[0]);
+//        labelTwo.setText(sideContentTitle[1]);
+//        labelThree.setText(sideContentTitle[2]);
+//        labelFour.setText(sideContentTitle[3]);
+//        labelFive.setText(sideContentTitle[4]);
         Objects.requireNonNull(context, "context");
         FlowHandler contentFlowHandler = (FlowHandler) context.getRegisteredObject("ContentFlowHandler");
         sideList.propagateMouseEventsToParent();
@@ -84,11 +84,11 @@ public class SlideMenuController {
         });
 
         Flow contentFlow = (Flow) context.getRegisteredObject("ContentFlow");
-        bindNodeToController(labelOne, slideContentController[0], contentFlow, contentFlowHandler);
+        bindNodeToController(labelOne, sideContentController[0], contentFlow, contentFlowHandler);
 //        bindNodeToController(checkbox, CheckboxController.class, contentFlow, contentFlowHandler);
 //        bindNodeToController(combobox, ComboBoxController.class, contentFlow, contentFlowHandler);
 //        bindNodeToController(dialogs, DialogController.class, contentFlow, contentFlowHandler);
-//        bindNodeToController(labelFive, slideContentController[1], contentFlow, contentFlowHandler);
+//        bindNodeToController(labelFive, sideContentController[1], contentFlow, contentFlowHandler);
     }
 
 

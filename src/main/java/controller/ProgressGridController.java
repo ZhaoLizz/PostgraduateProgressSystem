@@ -1,5 +1,6 @@
 package main.java.controller;
 
+import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.JFXTreeTableColumn;
 import com.jfoenix.controls.JFXTreeTableView;
@@ -13,24 +14,29 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 import javax.annotation.PostConstruct;
 
 import io.datafx.controller.ViewController;
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableColumn;
 import javafx.scene.layout.StackPane;
 import main.java.db.JDBCDao;
 import main.java.db.JDBCHelper;
 import main.java.model.Chapter;
+import main.java.model.Progress;
 import main.java.model.Student;
 import main.java.model.Subject;
 import main.java.utils.Toast;
@@ -53,6 +59,11 @@ public class ProgressGridController {
     private JFXTreeTableColumn<ProgressMessage, String> specialColumn;  //专业名称
     @FXML
     private JFXTreeTableColumn<ProgressMessage, String> schoolColumn;  //学校名称
+
+    @FXML
+    private JFXButton treeTableViewAdd;
+    @FXML
+    private JFXButton treeTableViewRemove;
     @FXML
     private Label treeTableViewCount;
     @FXML
@@ -73,15 +84,18 @@ public class ProgressGridController {
         StringProperty material;
         StringProperty special;
         StringProperty school;
+        StringProperty student_no;
 
-        public ProgressMessage(String subName, String chapterName, int chapterIndex, String material, String special, String school) {
+        public ProgressMessage(String subName, String chapterName, int chapterIndex, String material, String special, String school, String student_no) {
             this.subName = new SimpleStringProperty(subName);
             this.chapterName = new SimpleStringProperty(chapterName);
             this.chapterIndex = new SimpleIntegerProperty(chapterIndex);
             this.material = new SimpleStringProperty(material);
             this.special = new SimpleStringProperty(special);
             this.school = new SimpleStringProperty(school);
+            this.student_no = new SimpleStringProperty(student_no);
         }
+
 
         public StringProperty subNameProperty() {
             return subName;
@@ -208,7 +222,7 @@ public class ProgressGridController {
             return new GenericEditableTreeTableCell<>(
                     new IntegerTextFieldEditorBuilder());
         });
-        chapterIndexColumn.setOnEditCommit((TreeTableColumn.CellEditEvent<ProgressMessage,Integer> t) ->{
+        chapterIndexColumn.setOnEditCommit((TreeTableColumn.CellEditEvent<ProgressMessage, Integer> t) -> {
             ProgressMessage message = t.getTreeTableView()
                     .getTreeItem(t.getTreeTablePosition().getRow())
                     .getValue();
@@ -224,11 +238,11 @@ public class ProgressGridController {
             newValue.update(condition, new JDBCDao.UpdateListener() {
                 @Override
                 public void onSucceed() {
-                    Toast.logger("更新chapter_index 成功");
                     t.getTreeTableView()
                             .getTreeItem(t.getTreeTablePosition()
                                     .getRow())
                             .getValue().chapterIndex.set(t.getNewValue());
+                    Toast.logger("更新成功 chapter_index");
                 }
 
                 @Override
@@ -268,12 +282,64 @@ public class ProgressGridController {
             });
         });
 
+        specialColumn.setCellFactory((TreeTableColumn<ProgressMessage, String> param) -> {
+            return new GenericEditableTreeTableCell<>(new TextFieldEditorBuilder());
+        });
+        specialColumn.setOnEditCommit((TreeTableColumn.CellEditEvent<ProgressMessage, String> t) -> {
+            String student_no = t.getTreeTableView()
+                    .getTreeItem(t.getTreeTablePosition().getRow())
+                    .getValue().student_no.getValue();
+
+            Student condition = new Student();
+            condition.setStudent_no(student_no);
+            Student newValue = new Student();
+            newValue.setStudent_special(t.getNewValue());
+            newValue.update(condition, new JDBCDao.UpdateListener() {
+                @Override
+                public void onSucceed() {
+                    t.getTreeTableView()
+                            .getTreeItem(t.getTreeTablePosition().getRow())
+                            .getValue().special.set(t.getNewValue());
+                    Toast.logger("更新成功 student_special");
+                }
+
+                @Override
+                public void onFailed(Exception e) {
+                    e.printStackTrace();
+                }
+            });
+        });
+
+        schoolColumn.setCellFactory((TreeTableColumn<ProgressMessage, String> param) -> {
+            return new GenericEditableTreeTableCell<>(new TextFieldEditorBuilder());
+        });
+        schoolColumn.setOnEditCommit((TreeTableColumn.CellEditEvent<ProgressMessage, String> t) -> {
+            String student_no = t.getTreeTableView()
+                    .getTreeItem(t.getTreeTablePosition().getRow())
+                    .getValue().student_no.getValue();
+
+            Student condition = new Student();
+            condition.setStudent_no(student_no);
+            Student newValue = new Student();
+            newValue.setStudent_target(t.getNewValue());
+            newValue.update(condition, new JDBCDao.UpdateListener() {
+                @Override
+                public void onSucceed() {
+                    t.getTreeTableView()
+                            .getTreeItem(t.getTreeTablePosition().getRow())
+                            .getValue().school.set(t.getNewValue());
+                    Toast.logger("更新成功 student_target school");
+                }
+
+                @Override
+                public void onFailed(Exception e) {
+                    e.printStackTrace();
+                }
+            });
+        });
 
 
-
-
-        //TODO 剩余的几行事件处理
-
+        //添加数据,设置table属性
         final ObservableList<ProgressMessage> progressMessagesList = fetchProgressMessage();
         treeTableView.setRoot(new RecursiveTreeItem<>(progressMessagesList, RecursiveTreeObject::getChildren));
         treeTableView.setShowRoot(false);
@@ -283,8 +349,50 @@ public class ProgressGridController {
                                 PREFIX + treeTableView.getCurrentItemsCount() + POSTFIX,
                         treeTableView.currentItemsCountProperty()));
 
-        //TODO 搜索框处理
-//        searchField.textProperty().addListener();
+        //设置搜索框
+        searchField.textProperty().addListener(setupSerachField(treeTableView));
+        //设置增删按钮
+        /*treeTableViewAdd.disableProperty()
+                .bind(Bindings.notEqual(-1, treeTableView.getSelectionModel().selectedIndexProperty()));
+        treeTableViewAdd.setOnMouseClicked(e -> {
+
+        });*/
+        treeTableViewRemove.disableProperty()
+                .bind(Bindings.equal(-1, treeTableView.getSelectionModel().selectedIndexProperty()));
+        treeTableViewRemove.setOnMouseClicked(e->{
+            ProgressMessage removedItem = treeTableView.getSelectionModel().selectedItemProperty().get().getValue();
+            progressMessagesList.remove(removedItem);
+            final IntegerProperty currCountProp = treeTableView.currentItemsCountProperty();
+            currCountProp.set(currCountProp.get() - 1);
+
+            Progress progress = new Progress();
+            progress.setStudent_no(removedItem.student_no.getValue());
+            progress.setSubject_name(removedItem.subName.getValue());
+            progress.setChapter_name(removedItem.chapterName.getValue());
+            progress.delete(new JDBCDao.DeleteListener() {
+                @Override
+                public void onSucceed() {
+                    Toast.logger("delete progress succeed");
+                }
+
+                @Override
+                public void onFailed(Exception e) {
+                    e.printStackTrace();
+                }
+            });
+        });
+    }
+
+    private ChangeListener<String> setupSerachField(final JFXTreeTableView<ProgressMessage> tableView) {
+        return (observable, oldValue, newValue) -> tableView.setPredicate(progressMessageTreeItem -> {
+            final ProgressMessage progressMessage = progressMessageTreeItem.getValue();
+            return progressMessage.subName.getValue().toLowerCase().contains(newValue.toLowerCase())
+                    || progressMessage.material.getValue().toLowerCase().contains(newValue.toLowerCase())
+                    || progressMessage.chapterName.getValue().toLowerCase().contains(newValue.toLowerCase())
+                    || progressMessage.school.getValue().toLowerCase().contains(newValue.toLowerCase())
+                    || progressMessage.special.getValue().toLowerCase().contains(newValue.toLowerCase())
+                    || Integer.toString(progressMessage.chapterIndex.getValue()).contains(newValue);
+        });
     }
 
     private ObservableList<ProgressMessage> fetchProgressMessage() {
@@ -328,20 +436,11 @@ public class ProgressGridController {
 
                 }
             });
-            ProgressMessage progressMessage = new ProgressMessage(subject_name, chapter_name, chapter_index, subject_refer_material, student_target[0], student_special[0]);
+            ProgressMessage progressMessage = new ProgressMessage(subject_name, chapter_name, chapter_index, subject_refer_material, student_special[0], student_target[0], student_no);
             list.add(progressMessage);
         }
 
         return list;
     }
-
-
-    public static void main(String[] args) {
-//        ProgressGridController controller = new ProgressGridController();
-//        controller.fetchProgressMessage();
-
-
-    }
-
 
 }

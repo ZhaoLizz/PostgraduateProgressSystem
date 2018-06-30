@@ -22,7 +22,7 @@
 
                 <Label fx:id="treeTableViewCount" minWidth="80" styleClass="title-label" />
 
-                <JFXButton fx:id="treeTableViewAdd" styleClass="my-jfx-btn" text="添加进度" visible="true">
+                <JFXButton fx:id="treeTableViewAdd" styleClass="my-jfx-btn" text="添加进度" visible="false">
                <font>
                   <Font size="10.0" />
                </font></JFXButton>
@@ -37,7 +37,7 @@
 
                     <StackPane maxWidth="200" StackPane.alignment="CENTER_RIGHT">
 
-                        <JFXTextField fx:id="searchField" focusColor="#669966" promptText="科目搜索..." />
+                        <JFXTextField fx:id="searchField" focusColor="#669966" promptText="搜索..." />
                     </StackPane>
                 </StackPane>
             </HBox>
