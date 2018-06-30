@@ -1,8 +1,11 @@
 package main.java.controller;
 
 
+import com.jfoenix.controls.JFXAlert;
 import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXDialogLayout;
 import com.jfoenix.controls.JFXTextField;
+import com.jfoenix.controls.JFXToggleButton;
 import com.jfoenix.controls.JFXTreeTableColumn;
 import com.jfoenix.controls.JFXTreeTableView;
 import com.jfoenix.controls.RecursiveTreeItem;
@@ -29,6 +32,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TreeTableColumn;
 import javafx.scene.layout.StackPane;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import main.java.db.JDBCDao;
 import main.java.model.Student;
 import main.java.utils.Toast;
@@ -51,7 +56,7 @@ public class StudentGridController {
     @FXML
     private JFXTreeTableColumn<StudentFX, String> specialColumn;
     @FXML
-    private JFXTreeTableColumn<StudentFX, Boolean> isManagerColumn;
+    private JFXTreeTableColumn<StudentFX, String> isManagerColumn;
 
 
     @FXML
@@ -70,7 +75,7 @@ public class StudentGridController {
         StringProperty student_pw;
         StringProperty student_target;
         StringProperty student_special;
-        SimpleBooleanProperty student_is_manager;
+        StringProperty student_is_manager;
 
         public StudentFX(String no, String name, String pw, String target, String special, Boolean isManager) {
             student_no = new SimpleStringProperty(no);
@@ -78,7 +83,7 @@ public class StudentGridController {
             student_pw = new SimpleStringProperty(pw);
             student_target = new SimpleStringProperty(target);
             student_special = new SimpleStringProperty(special);
-            student_is_manager = new SimpleBooleanProperty(isManager);
+            student_is_manager = new SimpleStringProperty(String.valueOf(isManager));
         }
 
         public StudentFX(Student student) {
@@ -87,7 +92,7 @@ public class StudentGridController {
             student_pw = new SimpleStringProperty(student.getStudent_pw());
             student_target = new SimpleStringProperty(student.getStudent_target());
             student_special = new SimpleStringProperty(student.getStudent_special());
-            student_is_manager = new SimpleBooleanProperty(student.getStudent_is_manager() > 0);
+            student_is_manager = new SimpleStringProperty(String.valueOf(student.getStudent_is_manager() > 0));
         }
 
         public String getStudent_no() {
@@ -130,11 +135,11 @@ public class StudentGridController {
             return student_special;
         }
 
-        public boolean getStudent_is_manager() {
+        public String getStudent_is_manager() {
             return student_is_manager.get();
         }
 
-        public SimpleBooleanProperty student_is_managerProperty() {
+        public StringProperty student_is_managerProperty() {
             return student_is_manager;
         }
 
@@ -159,7 +164,7 @@ public class StudentGridController {
 
     private void setupEditableTableView() {
         setupCellValueFactory(noColumn, StudentFX::student_noProperty);
-        setupCellValueFactory(nameColumn,StudentFX::student_nameProperty);
+        setupCellValueFactory(nameColumn, StudentFX::student_nameProperty);
         setupCellValueFactory(pwColumn, StudentFX::student_pwProperty);
         setupCellValueFactory(targetColumn, StudentFX::student_targetProperty);
         setupCellValueFactory(specialColumn, StudentFX::student_specialProperty);
@@ -181,11 +186,45 @@ public class StudentGridController {
         specialColumn.setCellFactory((TreeTableColumn<StudentFX, String> param) -> {
             return new GenericEditableTreeTableCell<>(new TextFieldEditorBuilder());
         });
-        isManagerColumn.setCellFactory((TreeTableColumn<StudentFX, Boolean> param) -> {
-            return new GenericEditableTreeTableCell<>(new TextFieldEditorBuilder());
+
+        isManagerColumn.setOnEditStart((TreeTableColumn.CellEditEvent<StudentFX, String> t) -> {
+            JFXAlert alert = new JFXAlert((Stage) treeTableView.getScene().getWindow());
+            alert.initModality(Modality.APPLICATION_MODAL);
+            alert.setOverlayClose(true);
+            JFXDialogLayout layout = new JFXDialogLayout();
+            JFXToggleButton toggleButton = new JFXToggleButton();
+            toggleButton.setText("管理员权限");
+            toggleButton.setOnMouseReleased(v->{
+                boolean isSelect = toggleButton.isSelected();
+                t.getTreeTableView()
+                        .getTreeItem(t.getTreeTablePosition().getRow())
+                        .getValue().student_is_manager.set(String.valueOf(isSelect));
+
+                Student condition = getStudentCondition(t);
+                Student newValue = new Student();
+                newValue.setStudent_is_manager(isSelect ? 1 : 0);
+                newValue.update(condition, new JDBCDao.UpdateListener() {
+                    @Override
+                    public void onSucceed() {
+                        Toast.logger("update ismanager succeed");
+                    }
+
+                    @Override
+                    public void onFailed(Exception e) {
+                        e.printStackTrace();
+                    }
+                });
+            });
+            layout.setBody(toggleButton);
+            layout.setMaxHeight(200);
+            layout.setMaxWidth(200);
+            alert.setContent(layout);
+            alert.show();
+
+
         });
 
-        noColumn.setOnEditCommit((TreeTableColumn.CellEditEvent<StudentFX,String> t) ->{
+        noColumn.setOnEditCommit((TreeTableColumn.CellEditEvent<StudentFX, String> t) -> {
             Student condition = getStudentCondition(t);
             Student newValue = new Student();
             newValue.setStudent_no(t.getNewValue());
@@ -205,7 +244,7 @@ public class StudentGridController {
             });
         });
 
-        nameColumn.setOnEditCommit((TreeTableColumn.CellEditEvent<StudentFX,String> t) ->{
+        nameColumn.setOnEditCommit((TreeTableColumn.CellEditEvent<StudentFX, String> t) -> {
             Student condition = getStudentCondition(t);
             Student newValue = new Student();
             newValue.setStudent_name(t.getNewValue());
@@ -225,7 +264,7 @@ public class StudentGridController {
             });
         });
 
-        pwColumn.setOnEditCommit((TreeTableColumn.CellEditEvent<StudentFX,String> t) ->{
+        pwColumn.setOnEditCommit((TreeTableColumn.CellEditEvent<StudentFX, String> t) -> {
             Student condition = getStudentCondition(t);
             Student newValue = new Student();
             newValue.setStudent_pw(t.getNewValue());
@@ -245,8 +284,47 @@ public class StudentGridController {
             });
         });
 
+        targetColumn.setOnEditCommit((TreeTableColumn.CellEditEvent<StudentFX, String> t) -> {
+            Student condition = getStudentCondition(t);
+            Student newValue = new Student();
+            newValue.setStudent_target(t.getNewValue());
+            newValue.update(condition, new JDBCDao.UpdateListener() {
+                @Override
+                public void onSucceed() {
+                    Toast.logger("update student_target succeed!");
+                    t.getTreeTableView()
+                            .getTreeItem(t.getTreeTablePosition().getRow())
+                            .getValue().student_target.set(t.getNewValue());
+                }
 
+                @Override
+                public void onFailed(Exception e) {
+                    e.printStackTrace();
+                }
+            });
+        });
 
+        specialColumn.setOnEditCommit((TreeTableColumn.CellEditEvent<StudentFX, String> t) -> {
+            Student condition = getStudentCondition(t);
+            Student newValue = new Student();
+            newValue.setStudent_special(t.getNewValue());
+            newValue.update(condition, new JDBCDao.UpdateListener() {
+                @Override
+                public void onSucceed() {
+                    Toast.logger("update student_special succeed!");
+                    t.getTreeTableView()
+                            .getTreeItem(t.getTreeTablePosition().getRow())
+                            .getValue().student_special.set(t.getNewValue());
+                }
+
+                @Override
+                public void onFailed(Exception e) {
+                    e.printStackTrace();
+                }
+            });
+        });
+
+        isManagerColumn.setText("test");
 
 
         //添加数据,设置属性
@@ -261,7 +339,10 @@ public class StudentGridController {
 
         searchField.textProperty().addListener(setupSerachField(treeTableView));
         //TODO 增加删除的按钮
+
     }
+
+
 
     private ChangeListener<String> setupSerachField(final JFXTreeTableView<StudentFX> tableView) {
         return (observable, oldValue, newValue) -> tableView.setPredicate(progressMessageTreeItem -> {
@@ -271,7 +352,7 @@ public class StudentGridController {
                     || studentFX.student_pw.getValue().toLowerCase().contains(newValue.toLowerCase())
                     || studentFX.student_target.getValue().toLowerCase().contains(newValue.toLowerCase())
                     || studentFX.student_special.getValue().toLowerCase().contains(newValue.toLowerCase())
-                    || Boolean.toString(studentFX.student_is_manager.getValue()).contains(newValue.toLowerCase());
+                    || studentFX.student_is_manager.getValue().toLowerCase().contains(newValue.toLowerCase());
         });
     }
 
@@ -297,7 +378,7 @@ public class StudentGridController {
         return list;
     }
 
-    private Student getStudentCondition(TreeTableColumn.CellEditEvent<StudentFX,String> t) {
+    private Student getStudentCondition(TreeTableColumn.CellEditEvent<StudentFX, String> t) {
         StudentFX studentFX = t.getTreeTableView()
                 .getTreeItem(t.getTreeTablePosition().getRow())
                 .getValue();
@@ -306,7 +387,6 @@ public class StudentGridController {
         condition.setStudent_no(studentFX.getStudent_no());
         return condition;
     }
-
 
 
     private <T> void setupCellValueFactory(JFXTreeTableColumn<StudentFX, T> column, Function<StudentFX, ObservableValue<T>> mapper) {
