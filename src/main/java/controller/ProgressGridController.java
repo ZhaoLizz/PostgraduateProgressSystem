@@ -180,8 +180,8 @@ public class ProgressGridController {
                     .getValue();
 
 
-            String chapter_name = message.chapterName.toString();
-            String subject_name = message.subName.toString();
+            String chapter_name = message.chapterName.getValue();
+            String subject_name = message.subName.getValue();
             Chapter condition = new Chapter();
             condition.setChapter_name(chapter_name);
             condition.setSubject_name(subject_name);
@@ -191,7 +191,6 @@ public class ProgressGridController {
             newValue.update(condition, new JDBCDao.UpdateListener() {
                 @Override
                 public void onSucceed() {
-                    System.out.println("update succeed");
                     t.getTreeTableView()
                             .getTreeItem(t.getTreeTablePosition().getRow())
                             .getValue().chapterName.set(t.getNewValue());
@@ -214,9 +213,8 @@ public class ProgressGridController {
                     .getTreeItem(t.getTreeTablePosition().getRow())
                     .getValue();
 
-            //定位章节
-            String chapter_name = message.chapterName.toString();
-            String subject_name = message.subName.toString();
+            String chapter_name = message.chapterName.getValue();
+            String subject_name = message.subName.getValue();
             Chapter condition = new Chapter();
             condition.setChapter_name(chapter_name);
             condition.setSubject_name(subject_name);
@@ -231,6 +229,36 @@ public class ProgressGridController {
                             .getTreeItem(t.getTreeTablePosition()
                                     .getRow())
                             .getValue().chapterIndex.set(t.getNewValue());
+                }
+
+                @Override
+                public void onFailed(Exception e) {
+                    e.printStackTrace();
+                }
+            });
+        });
+
+        materialColumn.setCellFactory((TreeTableColumn<ProgressMessage, String> param) -> {
+            return new GenericEditableTreeTableCell<>(new TextFieldEditorBuilder());
+        });
+        materialColumn.setOnEditCommit((TreeTableColumn.CellEditEvent<ProgressMessage, String> t) -> {
+            //修改数据库
+            String subject_name = t.getTreeTableView()
+                    .getTreeItem(t.getTreeTablePosition().getRow())
+                    .getValue().subName.getValue();
+
+            Subject condition = new Subject();
+            condition.setSubject_name(subject_name);
+
+            Subject newValue = new Subject();
+            newValue.setSubject_refer_material(t.getNewValue());
+
+            newValue.update(condition, new JDBCDao.UpdateListener() {
+                @Override
+                public void onSucceed() {
+                    t.getTreeTableView()
+                            .getTreeItem(t.getTreeTablePosition().getRow())
+                            .getValue().material.set(t.getNewValue());
                 }
 
                 @Override
@@ -312,25 +340,7 @@ public class ProgressGridController {
 //        ProgressGridController controller = new ProgressGridController();
 //        controller.fetchProgressMessage();
 
-        String chapter_name = "排序123";
-        System.out.println(chapter_name);
 
-        Chapter condition = new Chapter();
-        condition.setChapter_name(chapter_name);
-
-        Chapter newValue = new Chapter();
-        newValue.setChapter_name("排序");
-        newValue.update(condition, new JDBCDao.UpdateListener() {
-            @Override
-            public void onSucceed() {
-                System.out.println("update suceed");
-            }
-
-            @Override
-            public void onFailed(Exception e) {
-                e.printStackTrace();
-            }
-        });
     }
 
 
