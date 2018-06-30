@@ -383,6 +383,9 @@ public class ProgressGridController {
         });
     }
 
+
+
+
     private ChangeListener<String> setupSerachField(final JFXTreeTableView<ProgressMessage> tableView) {
         return (observable, oldValue, newValue) -> tableView.setPredicate(progressMessageTreeItem -> {
             final ProgressMessage progressMessage = progressMessageTreeItem.getValue();

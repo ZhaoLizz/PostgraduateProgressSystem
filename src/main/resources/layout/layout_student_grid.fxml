@@ -11,7 +11,7 @@
 <?import javafx.scene.text.Font?>
 
     <!--stylesheets="@../css/jfoenix-components.css"-->
-<StackPane fx:id="root"  xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.java.controller.StudentGridController">
+<StackPane fx:id="root"  xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" >
 
     <VBox maxHeight="500" maxWidth="800" spacing="10">
 
@@ -64,7 +64,7 @@
 
                     <JFXTreeTableColumn fx:id="specialColumn" minWidth="133" resizable="false" text="报考专业" />
 
-                    <JFXTreeTableColumn fx:id="isManagerColumn" minWidth="133" resizable="false" text="用户身份" />
+                    <JFXTreeTableColumn fx:id="isManagerColumn" minWidth="133" resizable="false" text="管理员身份" />
                 </columns>
             </JFXTreeTableView>
         </children>

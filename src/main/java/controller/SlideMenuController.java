@@ -51,44 +51,46 @@ public class SlideMenuController {
     public void init() {
         // is manager
         if (CurUser.getInstance().isStudent_is_manager()) {
-            sideContentTitle = new String[]{"考研进度"};
-            sideContentController = new Class[]{ProgressGridController.class};
+            sideContentTitle = new String[]{"考研进度", "学生信息"};
+            sideContentController = new Class[]{ProgressGridController.class, StudentGridController.class};
 
+            labelOne.setText(sideContentTitle[0]);
+            labelTwo.setText(sideContentTitle[1]);
+//        labelThree.setText(sideContentTitle[2]);
+//        labelFour.setText(sideContentTitle[3]);
+//        labelFive.setText(sideContentTitle[4]);
+            Objects.requireNonNull(context, "context");
+            FlowHandler contentFlowHandler = (FlowHandler) context.getRegisteredObject("ContentFlowHandler");
+            sideList.propagateMouseEventsToParent();
+            sideList.getSelectionModel().selectedItemProperty().addListener((o, oldVal, newVal) -> {
+                new Thread(() -> {
+                    Platform.runLater(() -> {
+                        if (newVal != null) {
+                            try {
+                                contentFlowHandler.handle(newVal.getId());
+                            } catch (VetoException exc) {
+                                exc.printStackTrace();
+                            } catch (FlowException exc) {
+                                exc.printStackTrace();
+                            }
+                        }
+                    });
+                }).start();
+            });
+
+            Flow contentFlow = (Flow) context.getRegisteredObject("ContentFlow");
+            bindNodeToController(labelOne, sideContentController[0], contentFlow, contentFlowHandler);
+            bindNodeToController(labelTwo, sideContentController[1], contentFlow, contentFlowHandler);
+//        bindNodeToController(combobox, ComboBoxController.class, contentFlow, contentFlowHandler);
+//        bindNodeToController(dialogs, DialogController.class, contentFlow, contentFlowHandler);
+//        bindNodeToController(labelFive, sideContentController[1], contentFlow, contentFlowHandler);
         } else {
             //TODO 学生端侧边栏
 //            sideContentTitle = new String[]{"考研进度"};
 //            sideContentController = new Class[]{ProgressGridController.class};
         }
-        labelOne.setText(sideContentTitle[0]);
-//        labelTwo.setText(sideContentTitle[1]);
-//        labelThree.setText(sideContentTitle[2]);
-//        labelFour.setText(sideContentTitle[3]);
-//        labelFive.setText(sideContentTitle[4]);
-        Objects.requireNonNull(context, "context");
-        FlowHandler contentFlowHandler = (FlowHandler) context.getRegisteredObject("ContentFlowHandler");
-        sideList.propagateMouseEventsToParent();
-        sideList.getSelectionModel().selectedItemProperty().addListener((o, oldVal, newVal) -> {
-            new Thread(() -> {
-                Platform.runLater(() -> {
-                    if (newVal != null) {
-                        try {
-                            contentFlowHandler.handle(newVal.getId());
-                        } catch (VetoException exc) {
-                            exc.printStackTrace();
-                        } catch (FlowException exc) {
-                            exc.printStackTrace();
-                        }
-                    }
-                });
-            }).start();
-        });
 
-        Flow contentFlow = (Flow) context.getRegisteredObject("ContentFlow");
-        bindNodeToController(labelOne, sideContentController[0], contentFlow, contentFlowHandler);
-//        bindNodeToController(checkbox, CheckboxController.class, contentFlow, contentFlowHandler);
-//        bindNodeToController(combobox, ComboBoxController.class, contentFlow, contentFlowHandler);
-//        bindNodeToController(dialogs, DialogController.class, contentFlow, contentFlowHandler);
-//        bindNodeToController(labelFive, sideContentController[1], contentFlow, contentFlowHandler);
+
     }
 
 
