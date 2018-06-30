@@ -4,7 +4,7 @@ import main.java.db.JDBCObject;
 
 public class Subject extends JDBCObject {
     private String subject_name;
-    private int  subject_chapter_num;   //章节数目
+    private Integer  subject_chapter_num;   //章节数目
     private String subject_refer_material;  //参考资料
 
     @Override

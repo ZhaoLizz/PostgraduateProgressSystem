@@ -12,9 +12,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import jdk.nashorn.internal.scripts.JD;
 import main.java.model.Student;
+import main.java.utils.Toast;
 
 
 public class JDBCHelper {
@@ -89,6 +91,8 @@ public class JDBCHelper {
         if (params != null && !params.isEmpty()) {
             for (int i = 0; i < params.size(); i++) {
                 pstmt.setObject(index++, params.get(i));
+
+                Toast.logger(params.get(i).toString());
             }
         }
         result = pstmt.executeUpdate();     //返回成功失败状态值
@@ -399,22 +403,26 @@ public class JDBCHelper {
     }
 
     public static void main(String[] args) {
-        /*Student student = new Student();
-        student.setStudent_name("Rick");
+        Student student = new Student();
+        student.setStudent_name("jiang");
         student.setStudent_special("Science");
-        student.query(Student.class, new JDBCDao.QueryListener<Student>() {
+        student.setStudent_no("123");
+        student.setStudent_target("Tinghua");
+        student.setStudent_pw("123");
+
+//        student.setStudent_is_manager(0);
+
+        student.save(new JDBCDao.SaveListerner() {
             @Override
-            public void onSucceed(List<Student> result) {
-                for (Student s : result) {
-                    System.out.println(s);
-                }
+            public void onSucceed() {
+                System.out.println("cheng gong");
             }
 
             @Override
             public void onFailed(Exception e) {
                 e.printStackTrace();
             }
-        });*/
+        });
     }
 
 }

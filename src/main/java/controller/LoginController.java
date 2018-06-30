@@ -43,6 +43,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import main.java.app.MainApp;
 import main.java.db.JDBCDao;
+import main.java.db.JDBCHelper;
 import main.java.model.CurUser;
 import main.java.model.Student;
 import main.java.utils.TextUtils;
@@ -84,6 +85,7 @@ public class LoginController implements Initializable {
     //初始化回调
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        JDBCHelper.getInstance();//初始化数据库连接
 
         //设置窗口拖放
         borderPane.setOnMousePressed(event -> {

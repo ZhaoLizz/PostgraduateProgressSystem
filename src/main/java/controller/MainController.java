@@ -16,13 +16,11 @@ import io.datafx.controller.flow.context.FXMLViewFlowContext;
 import io.datafx.controller.flow.context.ViewFlowContext;
 import javafx.animation.Transition;
 import javafx.fxml.FXML;
-import javafx.scene.Cursor;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
 import main.java.datafx.ExtendedAnimatedFlowContainer;
 import main.java.model.CurUser;
-import main.java.utils.Statics;
 
 @ViewController(value = "../../resources/layout/layout_main.fxml")
 public class MainController {
@@ -79,7 +77,7 @@ public class MainController {
         } else {
             currentUserType.setText("学生端");
             //TODO 学生端列表界面
-            innerFlow = new Flow(ProgressGridController.class);
+//            innerFlow = new Flow(ProgressGridController.class);
         }
 
         try {
@@ -91,7 +89,7 @@ public class MainController {
             drawer.setContent(flowHandler.start(new ExtendedAnimatedFlowContainer(containerAnimationDuration, ContainerAnimations.SWIPE_LEFT)));
             context.register("ContentPane", drawer.getContent().get(0));
             //侧边栏滑动
-            Flow sideMenuFlow = new Flow(SideMenuController.class);
+            Flow sideMenuFlow = new Flow(SlideMenuController.class);
             final FlowHandler sideMenuFlowHandler = sideMenuFlow.createHandler(context);
             drawer.setSidePane(sideMenuFlowHandler.start(new ExtendedAnimatedFlowContainer(containerAnimationDuration, ContainerAnimations.SWIPE_LEFT)));
         } catch (Exception e) {

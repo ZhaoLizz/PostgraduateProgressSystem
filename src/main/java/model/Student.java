@@ -9,7 +9,7 @@ public class Student extends JDBCObject {
     private String student_name;
     private String student_target;
     private String student_special;
-    private int student_is_manager = 0;
+    private Integer student_is_manager;
 
     public String getStudent_no() {
         return student_no;
