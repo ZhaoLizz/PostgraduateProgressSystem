@@ -344,8 +344,6 @@ public class StudentGridController {
             });
         });
 
-        isManagerColumn.setText("test");
-
 
         //添加数据,设置属性
         final ObservableList<StudentFX> studentFXObservableList = fetchStudentFX();
@@ -449,10 +447,6 @@ public class StudentGridController {
                             student.save(new JDBCDao.SaveListerner() {
                                 @Override
                                 public void onSucceed() {
-                                    CurUser curUser = CurUser.getInstance();
-                                    curUser.setStudent_no(username);
-                                    System.out.println("添加保存成功");
-
                                     studentFXObservableList.add(new StudentFX(student));
                                     final IntegerProperty currCountProp = treeTableView.currentItemsCountProperty();
                                     currCountProp.set(currCountProp.get() + 1);
