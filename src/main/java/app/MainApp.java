@@ -13,7 +13,6 @@ import javafx.stage.StageStyle;
 
 
 public class MainApp extends Application {
-
     @FXMLViewFlowContext
     private ViewFlowContext flowContext;
 

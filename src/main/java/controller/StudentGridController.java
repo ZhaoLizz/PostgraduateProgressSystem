@@ -4,6 +4,9 @@ package main.java.controller;
 import com.jfoenix.controls.JFXAlert;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXDialogLayout;
+import com.jfoenix.controls.JFXListView;
+import com.jfoenix.controls.JFXNodesList;
+import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.JFXToggleButton;
 import com.jfoenix.controls.JFXTreeTableColumn;
@@ -20,6 +23,7 @@ import javax.annotation.PostConstruct;
 
 import io.datafx.controller.ViewController;
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -32,10 +36,14 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TreeTableColumn;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import main.java.db.JDBCDao;
+import main.java.model.CurUser;
 import main.java.model.Student;
+import main.java.utils.TextUtils;
 import main.java.utils.Toast;
 
 
@@ -58,13 +66,25 @@ public class StudentGridController {
     @FXML
     private JFXTreeTableColumn<StudentFX, String> isManagerColumn;
 
-
+    @FXML
+    private JFXButton treeTableViewAdd;
     @FXML
     private JFXButton treeTableViewRemove;
     @FXML
     private Label treeTableViewCount;
     @FXML
     private JFXTextField searchField;
+
+    /*//右下角弹出按钮
+    @FXML
+    private JFXNodesList nodesList;
+    @FXML
+    private JFXButton newButton;
+    @FXML
+    private JFXButton deleteButton;
+    @FXML
+    private JFXButton addButton;*/
+
 
     private static final String PREFIX = "( ";
     private static final String POSTFIX = " )";
@@ -338,11 +358,133 @@ public class StudentGridController {
                         treeTableView.currentItemsCountProperty()));
 
         searchField.textProperty().addListener(setupSerachField(treeTableView));
-        //TODO 增加删除的按钮
+
+        //TODO 添加删除
+        treeTableViewAdd.setOnMouseClicked(e -> {
+            addStudent((Stage) treeTableView.getScene().getWindow(), studentFXObservableList);
+        });
+
+        treeTableViewRemove.disableProperty()
+                .bind(Bindings.equal(-1, treeTableView.getSelectionModel().selectedIndexProperty()));
+        treeTableViewRemove.setOnMouseClicked(e->{
+            StudentFX removedItem = treeTableView.getSelectionModel().selectedItemProperty().get().getValue();
+            studentFXObservableList.remove(removedItem);
+            final IntegerProperty currCountProp = treeTableView.currentItemsCountProperty();
+            currCountProp.set(currCountProp.get() - 1);
+            //database
+            Student student = new Student();
+            student.setStudent_no(removedItem.getStudent_no());
+            student.delete(new JDBCDao.DeleteListener() {
+                @Override
+                public void onSucceed() {
+                    Toast.logger("delete student succeed");
+                }
+
+                @Override
+                public void onFailed(Exception e) {
+                    e.printStackTrace();
+                }
+            });
+        });
 
     }
 
+    private void addStudent(Stage stage,ObservableList<StudentFX> studentFXObservableList) {
+        //创建注册的dialog
+        JFXAlert alert = new JFXAlert(stage);
+        alert.initModality(Modality.APPLICATION_MODAL);
+        alert.setOverlayClose(true);
+        JFXDialogLayout layout = new JFXDialogLayout();
+        Label label = new Label("添加学生信息");
+        label.setFont(Font.font(Font.getFamilies().get(3)));
+        layout.setHeading(label);
 
+        JFXTextField usernameTextField = new JFXTextField();
+        usernameTextField.setPromptText("用户名");
+        JFXPasswordField passwordTextField = new JFXPasswordField();
+        passwordTextField.setPromptText("密码");
+        JFXTextField studentnameTextField = new JFXTextField();
+        studentnameTextField.setPromptText("姓名");
+        JFXTextField targetTextField = new JFXTextField();
+        targetTextField.setPromptText("目标院校");
+        JFXTextField specialTextField = new JFXTextField();
+        specialTextField.setPromptText("考研专业");
+        JFXToggleButton toggleButton = new JFXToggleButton();
+        toggleButton.setText("管理员权限");
+
+
+        VBox vBox = new VBox(usernameTextField, passwordTextField, studentnameTextField, targetTextField, specialTextField,toggleButton);
+        vBox.setSpacing(20);
+
+        JFXButton commitBtn = new JFXButton("确定");
+        commitBtn.getStyleClass().add("dialog-accept");
+        JFXButton cancelBtn = new JFXButton("取消");
+        cancelBtn.getStyleClass().add("dialog-accept");
+        cancelBtn.setOnAction(event1 -> alert.hideWithAnimation());
+        //注册逻辑
+        commitBtn.setOnAction(event -> {
+            String username = usernameTextField.getText();
+            String password = passwordTextField.getText();
+            String studentName = studentnameTextField.getText();
+            String target = targetTextField.getText();
+            String special = specialTextField.getText();
+
+            if (TextUtils.isEmpty(username) || TextUtils.isEmpty(password)) {
+                Toast.showDialog("提示", "用户名或密码不能为空!", (Stage) treeTableView.getScene().getWindow());
+                return;
+            } else {
+                //先仅仅设置用户名,查询是否唯一
+                Student student = new Student();
+                student.setStudent_no(username);
+                student.query(Student.class, new JDBCDao.QueryListener<Student>() {
+                    @Override
+                    public void onSucceed(List<Student> result) {
+                        if (result == null || result.size() == 0) {
+                            System.out.println("用户名合法,执行save()");
+                            student.setStudent_pw(password);
+                            student.setStudent_name(studentName);
+                            student.setStudent_target(target);
+                            student.setStudent_special(special);
+                            student.setStudent_is_manager(toggleButton.isSelected() ? 1 : 0);
+                            student.save(new JDBCDao.SaveListerner() {
+                                @Override
+                                public void onSucceed() {
+                                    CurUser curUser = CurUser.getInstance();
+                                    curUser.setStudent_no(username);
+                                    System.out.println("添加保存成功");
+
+                                    studentFXObservableList.add(new StudentFX(student));
+                                    final IntegerProperty currCountProp = treeTableView.currentItemsCountProperty();
+                                    currCountProp.set(currCountProp.get() + 1);
+                                    alert.close();
+                                }
+
+                                @Override
+                                public void onFailed(Exception e) {
+                                    e.printStackTrace();
+                                }
+                            });
+
+                        } else {
+                            Toast.showDialog("提示", "用户名已存在", stage);
+                        }
+                    }
+
+                    @Override
+                    public void onFailed(Exception e) {
+                        e.printStackTrace();
+                    }
+                });
+            }
+        });
+
+        layout.setActions(commitBtn, cancelBtn);
+        layout.setBody(vBox);
+        layout.setMaxHeight(200);
+        layout.setMaxWidth(300);
+        alert.setContent(layout);
+        alert.show();
+    }
 
     private ChangeListener<String> setupSerachField(final JFXTreeTableView<StudentFX> tableView) {
         return (observable, oldValue, newValue) -> tableView.setPredicate(progressMessageTreeItem -> {
