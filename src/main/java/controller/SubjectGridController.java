@@ -85,6 +85,7 @@ public class SubjectGridController {
             subjectReferMaterial = new SimpleStringProperty(subject.getSubject_refer_material());
         }
 
+
         @Override
         public String toString() {
             return "SubjectMessage{" +
