@@ -54,7 +54,7 @@
                     <children>
                         <ImageView fx:id="adminView" fitHeight="93.0" fitWidth="124.0" pickOnBounds="true" preserveRatio="true">
                             <image>
-                                <Image url="@../image/github.png" />
+                                <Image url="@../image/kaoyan.jpg" />
                             </image>
                         </ImageView>
                     </children>

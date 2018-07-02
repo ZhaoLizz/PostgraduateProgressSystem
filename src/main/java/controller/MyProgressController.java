@@ -27,10 +27,17 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.util.Duration;
+import main.java.db.JDBCDao;
+import main.java.model.CurUser;
+import main.java.model.Progress;
+import main.java.model.Subject;
 
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
+import java.util.List;
 
 import static javafx.animation.Interpolator.EASE_BOTH;
 
@@ -46,8 +53,27 @@ public class MyProgressController {
      */
     @PostConstruct
     public void init() {
+        List<Progress> progressList = fetchMyProgress();
         ArrayList<Node> children = new ArrayList<>();
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < progressList.size(); i++) {
+            Progress progress = progressList.get(i);
+            String subject_name = progress.getSubject_name();
+            String chapter_name = progress.getChapter_name();
+            final String[] subject_material = {""};
+            Subject subject = new Subject();
+            subject.setSubject_name(subject_name);
+            subject.query(Subject.class, new JDBCDao.QueryListener<Subject>() {
+                @Override
+                public void onSucceed(List<Subject> result) {
+                    subject_material[0] = result.get(0).getSubject_refer_material();
+                }
+
+                @Override
+                public void onFailed(Exception e) {
+
+                }
+            });
+
             StackPane child = new StackPane();
             double width = Math.random() * 100 + 100;
             child.setPrefWidth(width);
@@ -57,16 +83,30 @@ public class MyProgressController {
             children.add(child);
 
             // create content
-            Label label = new Label();
-            label.setText("header");
+//            Text subjectNameText = new Text(subject_name);
+//            subjectNameText.autosize();
+            Label subjectNameLabel = new Label(subject_name);
+            subjectNameLabel.setFont(Font.font(20));
+            subjectNameLabel.setAlignment(Pos.CENTER);
+            subjectNameLabel.setMinWidth(width);
+            Label materialLabel = new Label(subject_material[0]);
+            materialLabel.setFont(Font.font(20));
+            materialLabel.setAlignment(Pos.CENTER);
+            VBox upVBox = new VBox(subjectNameLabel, materialLabel);
 
-            StackPane header = new StackPane(label);
+            StackPane header = new StackPane(upVBox);
             String headerColor = getDefaultColor(i % 12);
             header.setStyle("-fx-background-radius: 5 5 0 0; -fx-background-color: " + headerColor);
+            header.setAlignment(Pos.CENTER);
 
             VBox.setVgrow(header, Priority.ALWAYS);
-            StackPane body = new StackPane();
+
+            Label chapterNameLabel = new Label(chapter_name);
+            chapterNameLabel.setFont(Font.font(20));
+            chapterNameLabel.setAlignment(Pos.CENTER);
+            StackPane body = new StackPane(chapterNameLabel);
             body.setMinHeight(Math.random() * 20 + 50);
+
 
             VBox content = new VBox();
             content.getChildren().addAll(header, body);
@@ -162,5 +202,31 @@ public class MyProgressController {
         return color;
     }
 
+    private List<Progress> fetchMyProgress() {
+        String subject_name = "";
+        String subject_material = "";
+        String chapter_name = "";
+        List<Progress> progressList = new ArrayList<>();
+
+        CurUser curUser = CurUser.getInstance();
+        String student_no = curUser.getStudent_no();
+
+        Progress progress = new Progress();
+        progress.setStudent_no(student_no);
+        progress.query(Progress.class, new JDBCDao.QueryListener<Progress>() {
+            @Override
+            public void onSucceed(List<Progress> result) {
+                for (Progress p : result) {
+                    progressList.add(p);
+                }
+            }
+
+            @Override
+            public void onFailed(Exception e) {
+
+            }
+        });
+        return progressList;
+    }
 
 }

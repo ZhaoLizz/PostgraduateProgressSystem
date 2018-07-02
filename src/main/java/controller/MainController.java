@@ -2,17 +2,21 @@ package main.java.controller;
 
 import com.jfoenix.controls.JFXAlert;
 import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXDialogLayout;
 import com.jfoenix.controls.JFXDrawer;
 import com.jfoenix.controls.JFXHamburger;
 import com.jfoenix.controls.JFXListView;
-import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXPopup;
 import com.jfoenix.controls.JFXRippler;
-import com.jfoenix.controls.JFXTextField;
+import com.jfoenix.controls.JFXSlider;
+import com.jfoenix.validation.ValidationFacade;
 
-
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.PostConstruct;
 
@@ -24,19 +28,26 @@ import io.datafx.controller.flow.context.FXMLViewFlowContext;
 import io.datafx.controller.flow.context.ViewFlowContext;
 import javafx.animation.Transition;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import javafx.util.StringConverter;
 import main.java.datafx.ExtendedAnimatedFlowContainer;
 import main.java.db.JDBCDao;
+import main.java.model.Chapter;
 import main.java.model.CurUser;
-import main.java.utils.TextUtils;
+import main.java.model.Progress;
+import main.java.model.Subject;
+import main.java.utils.Toast;
 
 @ViewController(value = "../../resources/layout/layout_main.fxml")
 public class MainController {
@@ -60,9 +71,14 @@ public class MainController {
     private Label currentUserType;
 
     private JFXPopup toolbarPopup;
+    public static JFXComboBox<Label> subjectNameComboBox = new JFXComboBox<>();
+    public static JFXComboBox<Label> chapterNameComboBox = new JFXComboBox<>();
+    public static JFXComboBox<Label> materialComboBox = new JFXComboBox<>();
+    public static JFXSlider chapterIndexSlider = new JFXSlider();
+
 
     @PostConstruct
-    public void init() throws  Exception {
+    public void init() throws Exception {
         drawer.setOnDrawerOpening(event -> {
             System.out.println("drawer.setOnDrawerOpening");
             final Transition animation = titleBurger.getAnimation();
@@ -97,7 +113,6 @@ public class MainController {
                     JFXPopup.PopupHPosition.RIGHT,
                     -12,
                     15));
-
 
 
         } catch (Exception e) {
@@ -142,8 +157,267 @@ public class MainController {
             if (toolbarPopupList.getSelectionModel().getSelectedIndex() == 1) {
                 Platform.exit();
             } else {
+                //添加学习进度
+                JFXAlert alert = new JFXAlert((Stage) root.getScene().getWindow());
+                alert.initModality(Modality.APPLICATION_MODAL);
+                alert.setOverlayClose(true);
+                JFXDialogLayout layout = new JFXDialogLayout();
+                Label label = new Label("添加学习进度");
+                label.setFont(Font.font(Font.getFamilies().get(3)));
+                layout.setHeading(label);
+                setupSubjectNameComboBox(subjectNameComboBox, subjectNameConverter);
+                chapterNameComboBox.setPromptText("章节名称");
+                chapterNameComboBox.setEditable(true);
 
+                Text text = new Text("章节序号");
+                chapterIndexSlider.getStyleClass().add("jfx-slider-style");
+                chapterIndexSlider.setMax(10);
+                chapterIndexSlider.setMaxWidth(180);
+                chapterIndexSlider.setOnMouseReleased(e -> {
+                    int curIndex = (int) chapterIndexSlider.getValue();
+                    if (curIndex != 0) {
+                        String subjectName = subjectNameComboBox.getSelectionModel().getSelectedItem().getText();
+                        Chapter chapter = new Chapter();
+                        chapter.setSubject_name(subjectName);
+                        chapter.setChapter_index(curIndex);
+                        chapter.query(Chapter.class, new JDBCDao.QueryListener<Chapter>() {
+                            @Override
+                            public void onSucceed(List<Chapter> result) {
+                                String chapterName = result.get(0).getChapter_name();
+                                chapterNameComboBox.setValue(new Label(chapterName));
+                            }
+
+                            @Override
+                            public void onFailed(Exception e) {
+
+                            }
+                        });
+                    } else {
+                        chapterNameComboBox.setValue(new Label(""));
+                    }
+                });
+                HBox chaperIndexBox = new HBox(text, chapterIndexSlider);
+
+                materialComboBox.setPromptText("参考资料");
+                materialComboBox.setEditable(true);
+
+                VBox vBox = new VBox(subjectNameComboBox, materialComboBox, chapterNameComboBox, chaperIndexBox);
+                vBox.setSpacing(20);
+                JFXButton commitBtn = new JFXButton("确定");
+                commitBtn.getStyleClass().add("dialog-accept");
+                JFXButton cancelBtn = new JFXButton("取消");
+                cancelBtn.getStyleClass().add("dialog-accept");
+                cancelBtn.setOnAction(event1 -> alert.hideWithAnimation());
+                commitBtn.setOnMouseReleased(e -> {
+                    String subjectName = subjectNameComboBox.getSelectionModel().getSelectedItem().getText();
+                    String chapterName = chapterNameComboBox.getSelectionModel().getSelectedItem().getText();
+                    String studentNo = CurUser.getInstance().getStudent_no();
+                    Progress progress = new Progress();
+                    progress.setChapter_name(chapterName);
+                    progress.setSubject_name(subjectName);
+                    progress.setStudent_no(studentNo);
+                    progress.save(new JDBCDao.SaveListerner() {
+                        @Override
+                        public void onSucceed() {
+                            Toast.logger("save progress succeed");
+                            alert.close();
+                        }
+
+                        @Override
+                        public void onFailed(Exception e) {
+
+                        }
+                    });
+                });
+
+                layout.setActions(commitBtn, cancelBtn);
+                layout.setBody(vBox);
+                layout.setMaxHeight(200);
+                layout.setMaxWidth(300);
+                alert.setContent(layout);
+                alert.show();
             }
         }
     }
+
+    public static void setupSubjectNameComboBox(JFXComboBox<Label> jfxEditableComboBox, StringConverter<Label> stringConverter) {
+        //setup comboBox
+        subjectNameComboBox.getItems().clear();
+        materialComboBox.getItems().clear();
+        chapterIndexSlider.setValue(0);
+        Set<String> chapterNameSet = new HashSet<>();
+        new Progress().query(Progress.class, new JDBCDao.QueryListener<Progress>() {
+            @Override
+            public void onSucceed(List<Progress> result) {
+                for (Progress p : result) {
+                    chapterNameSet.add(p.getSubject_name());
+                }
+                for (String s : chapterNameSet) {
+                    subjectNameComboBox.getItems().add(new Label(s));
+                }
+            }
+
+
+            @Override
+            public void onFailed(Exception e) {
+
+            }
+        });
+
+        jfxEditableComboBox.setConverter(stringConverter);
+        jfxEditableComboBox.setEditable(true);
+        jfxEditableComboBox.setPromptText("科目名称");
+    }
+
+    public static StringConverter<Label> subjectNameConverter = new StringConverter<Label>() {
+        //把label转换为String显示
+        @Override
+        public String toString(Label object) {
+            if (null != object) {
+                chapterIndexSlider.setValue(0);
+                String subjectName = object.getText();
+                setupChapterNameComboBox(chapterNameComboBox, subjectName);
+                setupSubjectMaterialComboBox(materialComboBox, subjectName);
+            }
+            return object == null ? "" : object.getText();
+        }
+
+        //从输入框中获取的信息回调
+        @Override
+        public Label fromString(String subjectName) {
+            chapterIndexSlider.setValue(0);
+            setupChapterNameComboBox(chapterNameComboBox, subjectName);
+            setupSubjectMaterialComboBox(materialComboBox, subjectName);
+            return subjectName == null || subjectName.isEmpty() ? null : new Label(subjectName);
+        }
+    };
+
+    /**
+     * 1. 首先根据subjectName查到科目包含的章节,设置到ComboBox里面
+     * 2. 设置ComboBox相关属性和监听
+     *
+     * @param jfxEditableComboBox
+     * @param subjectName
+     */
+    public static void setupChapterNameComboBox(JFXComboBox<Label> jfxEditableComboBox, String subjectName) {
+        //给章节名称ComboBox添加数据
+        chapterNameComboBox.getItems().clear();
+        Chapter chapter = new Chapter();
+        chapter.setSubject_name(subjectName);
+        chapter.query(Chapter.class, new JDBCDao.QueryListener<Chapter>() {
+            @Override
+            public void onSucceed(List<Chapter> result) {
+                for (Chapter c : result) {
+                    String chapterName = c.getChapter_name();
+                    chapterNameComboBox.getItems().add(new Label(chapterName));
+                }
+            }
+
+            @Override
+            public void onFailed(Exception e) {
+
+            }
+        });
+
+        //输入框监听
+        jfxEditableComboBox.setConverter(new StringConverter<Label>() {
+            //把label转换为String显示
+            @Override
+            public String toString(Label object) {
+                if (null != object) {
+                    String chapterName = object.getText();
+                    String subjectName = subjectNameComboBox.getSelectionModel().getSelectedItem().getText();
+                    setupChapterIndexSlider(chapterIndexSlider, subjectName, chapterName);
+                }
+                return object == null ? "" : object.getText();
+            }
+
+            //从输入框中获取的信息回调
+            @Override
+            public Label fromString(String chapterName) {
+                String subjectName = subjectNameComboBox.getSelectionModel().getSelectedItem().getText();
+                setupChapterIndexSlider(chapterIndexSlider, subjectName, chapterName);
+                return chapterName == null || chapterName.isEmpty() ? null : new Label(chapterName);
+            }
+        });
+//        jfxEditableComboBox.setEditable(true);
+//        jfxEditableComboBox.setPromptText("章节名称");
+    }
+
+    public static void setupSubjectMaterialComboBox(JFXComboBox<Label> jfxEditableComboBox, String subjectName) {
+        materialComboBox.getItems().clear();
+        Subject subject = new Subject();
+        subject.setSubject_name(subjectName);
+        subject.query(Subject.class, new JDBCDao.QueryListener<Subject>() {
+            @Override
+            public void onSucceed(List<Subject> result) {
+                for (Subject s : result) {
+                    String material = s.getSubject_refer_material();
+                    materialComboBox.getItems().add(new Label(material));
+                }
+            }
+
+            @Override
+            public void onFailed(Exception e) {
+
+            }
+        });
+
+        jfxEditableComboBox.setConverter(new StringConverter<Label>() {
+            //把label转换为String显示
+            @Override
+            public String toString(Label object) {
+                if (null != object) {
+                    String subjectName = object.getText();
+
+                }
+                return object == null ? "" : object.getText();
+            }
+
+            //从输入框中获取的信息回调
+            @Override
+            public Label fromString(String string) {
+                System.out.println(string);
+                return string == null || string.isEmpty() ? null : new Label(string);
+            }
+        });
+    }
+
+    public static void setupChapterIndexSlider(JFXSlider chapterIndexSlider, String subjectName, String chapterName) {
+        Subject subject = new Subject();
+        subject.setSubject_name(subjectName);
+        subject.query(Subject.class, new JDBCDao.QueryListener<Subject>() {
+            @Override
+            public void onSucceed(List<Subject> result) {
+                if (result != null && result.size() == 1) {
+                    chapterIndexSlider.setMax(result.get(0).getSubject_chapter_num());
+                }
+            }
+
+            @Override
+            public void onFailed(Exception e) {
+
+            }
+        });
+
+        Chapter chapter = new Chapter();
+        chapter.setSubject_name(subjectName);
+        chapter.setChapter_name(chapterName);
+        chapter.query(Chapter.class, new JDBCDao.QueryListener<Chapter>() {
+            @Override
+            public void onSucceed(List<Chapter> result) {
+                if (result != null && result.size() == 1) {
+                    chapterIndexSlider.setValue(result.get(0).getChapter_index());
+                }
+            }
+
+            @Override
+            public void onFailed(Exception e) {
+
+            }
+        });
+
+    }
+
+
 }

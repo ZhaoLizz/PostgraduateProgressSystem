@@ -153,7 +153,6 @@ public class StuProgressGridController {
         setupCellValueFactory(schoolColumn, ProgressMessage::schoolProperty);
 
 
-
         //添加数据,设置table属性
         final ObservableList<ProgressMessage> progressMessagesList = fetchProgressMessage();
         treeTableView.setRoot(new RecursiveTreeItem<>(progressMessagesList, RecursiveTreeObject::getChildren));
