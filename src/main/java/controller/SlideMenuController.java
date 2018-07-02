@@ -124,9 +124,7 @@ public class SlideMenuController {
 
     }
 
-    private void setupsideList() {
 
-    }
 
 
     private void bindNodeToController(Node node, Class<?> controllerClass, Flow flow, FlowHandler flowHandler) {

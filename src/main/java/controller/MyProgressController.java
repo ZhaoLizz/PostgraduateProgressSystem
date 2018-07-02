@@ -50,7 +50,6 @@ public class MyProgressController {
     @FXML
     private JFXMasonryPane masonryPane;
 
-
     /**
      * init fxml when loaded.
      */
@@ -143,8 +142,14 @@ public class MyProgressController {
                 MainController.materialComboBox.setValue(new Label(subject_material[0]));
                 MainController.subjectNameComboBox.setValue(new Label(subject_name));
 
+
+                Progress condition = new Progress();
+                condition.setSubject_name(subject_name);
+                condition.setChapter_name(chapter_name);
+                condition.setStudent_no(CurUser.getInstance().getStudent_no());
                 //显示dialog,更新数据库
-                MainController.showAddProgressDialog(MainController.TYPE_UPDATE);
+                MainController.showAddProgressDialog(MainController.TYPE_UPDATE,condition);
+
             });
 
             StackPane.setMargin(button, new Insets(0, 12, 0, 0));

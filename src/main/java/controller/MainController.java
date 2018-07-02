@@ -160,12 +160,12 @@ public class MainController {
             if (toolbarPopupList.getSelectionModel().getSelectedIndex() == 1) {
                 Platform.exit();
             } else {
-                showAddProgressDialog(TYPE_INSERT);
+                showAddProgressDialog(TYPE_INSERT, null);
             }
         }
     }
 
-    public static void showAddProgressDialog(int databaseType) {
+    public static void showAddProgressDialog(int databaseType,Progress condition) {
         //添加学习进度
         JFXAlert alert = new JFXAlert((Stage) root.getScene().getWindow());
         alert.initModality(Modality.APPLICATION_MODAL);
@@ -246,23 +246,22 @@ public class MainController {
             } else {
                 System.out.println(chapterName + "  " + subjectName + " " + studentNo);
                 System.out.println("chapter name : " +  MainController.chapterNameComboBox.getSelectionModel().getSelectedItem().getText());
-                Progress newValue = new Progress();
-                newValue.setChapter_name(chapterNameComboBox.getSelectionModel().getSelectedItem().getText());
-                newValue.setSubject_name(subjectNameComboBox.getSelectionModel().getSelectedItem().getText());
+                if (condition != null) {
+                    progress.update(condition, new JDBCDao.UpdateListener() {
+                        @Override
+                        public void onSucceed() {
+                            System.out.println("update succeed");
+                        }
 
-                newValue.update(progress, new JDBCDao.UpdateListener() {
-                    @Override
-                    public void onSucceed() {
-                        System.out.println("update succeed");
-                    }
-
-                    @Override
-                    public void onFailed(Exception e) {
-                        e.printStackTrace();
-                        System.out.println("update progress failed");
-                    }
-                });
+                        @Override
+                        public void onFailed(Exception e) {
+                            e.printStackTrace();
+                            System.out.println("update progress failed");
+                        }
+                    });
+                }
             }
+            alert.close();
         });
 
         layout.setActions(commitBtn, cancelBtn);
