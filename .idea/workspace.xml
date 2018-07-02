@@ -6,13 +6,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cdb932d9-7e58-4d94-93a9-e7b232ef17da" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/controller/ChapterGridController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/layout/layout_chapter_grid.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/System/main/java/controller/MainController$3.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/System/main/java/controller/MainController$3.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/System/main/java/controller/MainController.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/System/main/java/controller/MainController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/System/main/java/controller/SlideMenuController.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/System/main/java/controller/SlideMenuController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/controller/SlideMenuController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controller/SlideMenuController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/controller/ChapterGridController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controller/ChapterGridController.java" afterDir="false" />
     </list>
     <ignored path="JavaFxApplication.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -147,23 +141,25 @@
                 </provider>
               </entry>
             </file>
-            <file leaf-file-name="SubjectGridController.java" pinned="false" current-in-tab="false">
+            <file leaf-file-name="SubjectGridController.java" pinned="false" current-in-tab="true">
               <entry file="file://$PROJECT_DIR$/src/main/java/controller/SubjectGridController.java">
                 <provider selected="true" editor-type-id="text-editor">
-                  <state relative-caret-position="278">
-                    <caret line="243" column="29" lean-forward="true" selection-start-line="243" selection-start-column="29" selection-end-line="243" selection-end-column="29" />
+                  <state relative-caret-position="425">
+                    <caret line="342" column="21" lean-forward="true" selection-start-line="337" selection-start-column="8" selection-end-line="342" selection-end-column="21" />
                     <folding>
                       <element signature="imports" expanded="true" />
+                      <element signature="e#2507#2508#0" expanded="true" />
+                      <element signature="e#2547#2548#0" expanded="true" />
                     </folding>
                   </state>
                 </provider>
               </entry>
             </file>
-            <file leaf-file-name="layout_subject_grid.fxml" pinned="false" current-in-tab="true">
+            <file leaf-file-name="layout_subject_grid.fxml" pinned="false" current-in-tab="false">
               <entry file="file://$PROJECT_DIR$/src/main/resources/layout/layout_subject_grid.fxml">
                 <provider editor-type-id="JavaFX-Scene-Builder" />
                 <provider selected="true" editor-type-id="text-editor">
-                  <state relative-caret-position="325">
+                  <state relative-caret-position="475">
                     <caret line="40" column="43" lean-forward="true" selection-start-line="40" selection-start-column="43" selection-end-line="40" selection-end-column="43" />
                   </state>
                 </provider>
@@ -191,15 +187,6 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ChapterGridController.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/controller/ChapterGridController.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="50">
-              <caret line="2" column="34" selection-start-line="2" selection-start-column="34" selection-end-line="2" selection-end-column="34" />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="SlideMenuController.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/controller/SlideMenuController.java">
           <provider selected="true" editor-type-id="text-editor">
@@ -212,12 +199,60 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="layout_chapter_grid.fxml" pinned="false" current-in-tab="true">
+      <file leaf-file-name="ChapterGridController.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/main/java/controller/ChapterGridController.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1805">
+              <caret line="216" column="51" selection-start-line="216" selection-start-column="51" selection-end-line="216" selection-end-column="51" />
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="e#1561#1562#0" expanded="true" />
+                <element signature="e#1601#1602#0" expanded="true" />
+                <element signature="e#2140#2141#0" expanded="true" />
+                <element signature="e#2188#2189#0" expanded="true" />
+                <element signature="e#2243#2244#0" expanded="true" />
+                <element signature="e#2285#2286#0" expanded="true" />
+                <element signature="e#2327#2328#0" expanded="true" />
+                <element signature="e#2375#2376#0" expanded="true" />
+                <element signature="e#2430#2431#0" expanded="true" />
+                <element signature="e#2472#2473#0" expanded="true" />
+                <element signature="e#2512#2513#0" expanded="true" />
+                <element signature="e#2561#2562#0" expanded="true" />
+                <element signature="e#2624#2625#0" expanded="true" />
+                <element signature="e#2667#2668#0" expanded="true" />
+                <element signature="e#9404#9405#0" expanded="true" />
+                <element signature="e#9482#9483#0" expanded="true" />
+                <element signature="e#9561#9562#0" expanded="true" />
+                <element signature="e#9620#9621#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Chapter" pinned="false" current-in-tab="false">
+        <entry file="das://76193f78-9ef1-41f3-8f21-90ad8a05f5be/database/Test/schema/dbo/table/Chapter">
+          <provider selected="true" editor-type-id="com.intellij.database.editor.DatabaseTableFileEditorProvider">
+            <state>
+              <filtering enabled="true" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Subject" pinned="false" current-in-tab="false">
+        <entry file="das://76193f78-9ef1-41f3-8f21-90ad8a05f5be/database/Test/schema/dbo/table/Subject">
+          <provider selected="true" editor-type-id="com.intellij.database.editor.DatabaseTableFileEditorProvider">
+            <state>
+              <filtering enabled="true" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="layout_chapter_grid.fxml" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/resources/layout/layout_chapter_grid.fxml">
           <provider editor-type-id="JavaFX-Scene-Builder" />
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="498">
-              <caret line="93" column="37" selection-start-line="93" selection-start-column="37" selection-end-line="93" selection-end-column="37" />
+            <state relative-caret-position="398">
+              <caret line="89" column="49" selection-start-line="89" selection-start-column="31" selection-end-line="89" selection-end-column="49" />
             </state>
           </provider>
         </entry>
@@ -234,12 +269,9 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>添加</find>
-      <find>test</find>
       <find>progress</find>
       <find>search</find>
       <find>ri</find>
-      <find>add</find>
       <find>ttf</find>
       <find>src</find>
       <find>&quot;</find>
@@ -264,9 +296,13 @@
       <find>upda</find>
       <find>update</find>
       <find>Toast</find>
+      <find>SubjectMessage</find>
+      <find>fetchh</find>
+      <find>add</find>
     </findStrings>
     <replaceStrings>
       <replace>ProgressMessage</replace>
+      <replace>ChapterMessage</replace>
     </replaceStrings>
   </component>
   <component name="FindManager">
@@ -309,7 +345,6 @@
         <option value="$PROJECT_DIR$/src/main/resources/layout/layout_student_grid.fxml" />
         <option value="$PROJECT_DIR$/src/main/java/controller/ProgressGridController.java" />
         <option value="$PROJECT_DIR$/src/main/java/controller/StudentGridController.java" />
-        <option value="$PROJECT_DIR$/src/main/java/controller/SubjectGridController.java" />
         <option value="$PROJECT_DIR$/src/main/java/controller/StudentProgressGridController.java" />
         <option value="$PROJECT_DIR$/src/main/java/controller/LoginController.java" />
         <option value="$PROJECT_DIR$/src/main/java/controller/MyPlanController.java" />
@@ -329,6 +364,8 @@
         <option value="$PROJECT_DIR$/src/main/java/controller/MainController.java" />
         <option value="$PROJECT_DIR$/src/main/resources/layout/layout_chapter_grid.fxml" />
         <option value="$PROJECT_DIR$/src/main/java/controller/SlideMenuController.java" />
+        <option value="$PROJECT_DIR$/src/main/java/controller/SubjectGridController.java" />
+        <option value="$PROJECT_DIR$/src/main/java/controller/ChapterGridController.java" />
       </list>
     </option>
   </component>
@@ -639,7 +676,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="178283000" />
+    <option name="totallyTimeSpent" value="183512000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -652,7 +689,6 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1066" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info anchor="right" id="Palette" order="3" />
       <window_info anchor="bottom" id="TODO" order="8" weight="0.32890365" />
@@ -664,13 +700,13 @@
       <window_info anchor="right" id="Maven Projects" order="9" />
       <window_info anchor="bottom" id="Database Changes" order="15" show_stripe_button="false" />
       <window_info anchor="bottom" id="Version Control" order="14" />
-      <window_info anchor="bottom" id="Run" order="7" sideWeight="0.49733475" weight="0.34440753" />
+      <window_info active="true" anchor="bottom" id="Run" order="7" sideWeight="0.49733475" visible="true" weight="0.34440753" />
       <window_info anchor="bottom" id="Terminal" order="16" weight="0.32779622" />
       <window_info id="Capture Tool" order="6" />
       <window_info anchor="bottom" id="Database Console" order="0" sideWeight="0.4989339" weight="0.36987817" />
       <window_info id="Designer" order="2" />
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.5714286" visible="true" weight="0.13166311" />
-      <window_info anchor="right" id="Database" order="5" weight="0.20042644" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.5714286" weight="0.13166311" />
+      <window_info anchor="right" id="Database" order="5" visible="true" weight="0.20042644" />
       <window_info anchor="bottom" id="Find" order="3" weight="0.32779622" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -718,38 +754,38 @@
       <window_info anchor="bottom" id="Application Servers" order="13" />
       <window_info id="Designer" order="2" />
       <window_info anchor="right" id="Palette" order="3" />
-      <window_info anchor="bottom" id="Database Console" order="0" sideWeight="0.4989339" weight="0.36987817" />
-      <window_info active="true" anchor="bottom" id="Run" order="7" sideWeight="0.49733475" visible="true" weight="0.38489872" />
       <window_info anchor="right" id="JetGradle" order="4" />
+      <window_info anchor="bottom" id="Database Console" order="0" sideWeight="0.4989339" weight="0.36987817" />
+      <window_info anchor="bottom" id="Run" order="7" sideWeight="0.49733475" weight="0.34440753" />
+      <window_info anchor="bottom" id="Cvs" order="5" weight="0.25" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
+      <window_info anchor="bottom" id="Changes" order="9" />
       <window_info id="UI Designer" order="3" />
       <window_info anchor="bottom" id="Profiler" order="10" />
       <window_info id="Favorites" order="4" sideWeight="0.42857143" side_tool="true" weight="0.1433902" />
-      <window_info anchor="bottom" id="Changes" order="9" />
+      <window_info anchor="bottom" id="Terminal" order="16" weight="0.32779622" />
       <window_info id="Capture Tool" order="6" />
       <window_info anchor="right" id="Capture Analysis" order="6" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="bottom" id="Event Log" order="17" sideWeight="0.5026652" side_tool="true" weight="0.38648948" />
-      <window_info anchor="bottom" id="Cvs" order="5" weight="0.25" />
       <window_info anchor="bottom" id="Messages" order="11" weight="0.32890365" />
-      <window_info anchor="bottom" id="TODO" order="8" weight="0.32890365" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="bottom" id="Problems" order="12" />
+      <window_info id="Image Layers" order="5" />
       <window_info anchor="bottom" id="Database Changes" order="15" show_stripe_button="false" />
       <window_info anchor="bottom" id="Version Control" order="14" />
       <window_info anchor="right" id="Maven Projects" order="9" />
-      <window_info anchor="bottom" id="Terminal" order="16" weight="0.32780847" />
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.5714286" weight="0.15683104" />
-      <window_info anchor="right" id="Database" order="5" weight="0.15440582" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.5714286" visible="true" weight="0.13166311" />
+      <window_info anchor="right" id="Database" order="5" visible="true" weight="0.20042644" />
       <window_info anchor="bottom" id="Message" order="2" />
-      <window_info id="Image Layers" order="5" />
+      <window_info anchor="bottom" id="TODO" order="8" weight="0.32890365" />
       <window_info anchor="right" id="Palette&#9;" order="7" />
       <window_info anchor="right" id="Theme Preview" order="8" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="6" weight="0.4" />
       <window_info anchor="bottom" id="Find" order="3" weight="0.32779622" />
       <window_info anchor="bottom" id="SQL Generator" order="1" weight="0.32890365" />
-      <window_info anchor="bottom" id="Debug" order="4" weight="0.4" />
+      <window_info anchor="bottom" id="Debug" order="4" weight="0.39977852" />
     </layout-to-restore>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -967,13 +1003,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="das://76193f78-9ef1-41f3-8f21-90ad8a05f5be/database/Test/schema/dbo/table/Subject">
-      <provider selected="true" editor-type-id="com.intellij.database.editor.DatabaseTableFileEditorProvider">
-        <state>
-          <filtering enabled="true" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/db/JDBCObject.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="180">
@@ -992,13 +1021,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="25">
           <caret line="1" column="13" selection-start-line="1" selection-start-column="13" selection-end-line="1" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="das://76193f78-9ef1-41f3-8f21-90ad8a05f5be/database/Test/schema/dbo/table/Chapter">
-      <provider selected="true" editor-type-id="com.intellij.database.editor.DatabaseTableFileEditorProvider">
-        <state>
-          <filtering enabled="true" />
         </state>
       </provider>
     </entry>
@@ -1087,28 +1109,11 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/controller/ChapterGridController.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="50">
-          <caret line="2" column="34" selection-start-line="2" selection-start-column="34" selection-end-line="2" selection-end-column="34" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/resources/layout/layout_progress_grid.fxml">
       <provider editor-type-id="JavaFX-Scene-Builder" />
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-175">
           <caret line="11" lean-forward="true" selection-start-line="11" selection-end-line="11" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/controller/SubjectGridController.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="278">
-          <caret line="243" column="29" lean-forward="true" selection-start-line="243" selection-start-column="29" selection-end-line="243" selection-end-column="29" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1125,7 +1130,7 @@
     <entry file="file://$PROJECT_DIR$/src/main/resources/layout/layout_subject_grid.fxml">
       <provider editor-type-id="JavaFX-Scene-Builder" />
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="325">
+        <state relative-caret-position="475">
           <caret line="40" column="43" lean-forward="true" selection-start-line="40" selection-start-column="43" selection-end-line="40" selection-end-column="43" />
         </state>
       </provider>
@@ -1143,8 +1148,62 @@
     <entry file="file://$PROJECT_DIR$/src/main/resources/layout/layout_chapter_grid.fxml">
       <provider editor-type-id="JavaFX-Scene-Builder" />
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="498">
-          <caret line="93" column="37" selection-start-line="93" selection-start-column="37" selection-end-line="93" selection-end-column="37" />
+        <state relative-caret-position="398">
+          <caret line="89" column="49" selection-start-line="89" selection-start-column="31" selection-end-line="89" selection-end-column="49" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="das://76193f78-9ef1-41f3-8f21-90ad8a05f5be/database/Test/schema/dbo/table/Subject">
+      <provider selected="true" editor-type-id="com.intellij.database.editor.DatabaseTableFileEditorProvider">
+        <state>
+          <filtering enabled="true" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="das://76193f78-9ef1-41f3-8f21-90ad8a05f5be/database/Test/schema/dbo/table/Chapter">
+      <provider selected="true" editor-type-id="com.intellij.database.editor.DatabaseTableFileEditorProvider">
+        <state>
+          <filtering enabled="true" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/controller/SubjectGridController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="425">
+          <caret line="342" column="21" lean-forward="true" selection-start-line="337" selection-start-column="8" selection-end-line="342" selection-end-column="21" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#2507#2508#0" expanded="true" />
+            <element signature="e#2547#2548#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/controller/ChapterGridController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1805">
+          <caret line="216" column="51" selection-start-line="216" selection-start-column="51" selection-end-line="216" selection-end-column="51" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#1561#1562#0" expanded="true" />
+            <element signature="e#1601#1602#0" expanded="true" />
+            <element signature="e#2140#2141#0" expanded="true" />
+            <element signature="e#2188#2189#0" expanded="true" />
+            <element signature="e#2243#2244#0" expanded="true" />
+            <element signature="e#2285#2286#0" expanded="true" />
+            <element signature="e#2327#2328#0" expanded="true" />
+            <element signature="e#2375#2376#0" expanded="true" />
+            <element signature="e#2430#2431#0" expanded="true" />
+            <element signature="e#2472#2473#0" expanded="true" />
+            <element signature="e#2512#2513#0" expanded="true" />
+            <element signature="e#2561#2562#0" expanded="true" />
+            <element signature="e#2624#2625#0" expanded="true" />
+            <element signature="e#2667#2668#0" expanded="true" />
+            <element signature="e#9404#9405#0" expanded="true" />
+            <element signature="e#9482#9483#0" expanded="true" />
+            <element signature="e#9561#9562#0" expanded="true" />
+            <element signature="e#9620#9621#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
