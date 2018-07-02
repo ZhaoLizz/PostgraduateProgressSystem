@@ -45,6 +45,7 @@ import main.java.app.MainApp;
 import main.java.db.JDBCDao;
 import main.java.db.JDBCHelper;
 import main.java.model.CurUser;
+import main.java.model.Progress;
 import main.java.model.Student;
 import main.java.utils.TextUtils;
 import main.java.utils.Toast;
@@ -389,6 +390,7 @@ public class LoginController implements Initializable {
         alert.show();
     }
 
+   
 
 
 }

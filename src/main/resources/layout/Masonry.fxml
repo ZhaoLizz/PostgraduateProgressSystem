@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXMasonryPane?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.StackPane?>
-<?import javafx.geometry.Insets?>
-<StackPane fx:id="root" xmlns:fx="http://javafx.com/fxml/1"
-           xmlns="http://javafx.com/javafx/2.2">
-    <ScrollPane fitToWidth="true" fx:id="scrollPane" hbarPolicy="NEVER">
+
+<StackPane fx:id="root" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1">
+
+    <ScrollPane fx:id="scrollPane" fitToWidth="true" hbarPolicy="NEVER">
         <JFXMasonryPane fx:id="masonryPane" HSpacing="10" VSpacing="10">
-            <padding><Insets top="16" right="16" bottom="16" left="16"/></padding>
+            <padding><Insets bottom="16" left="16" right="16" top="16" /></padding>
         </JFXMasonryPane>
     </ScrollPane>
 </StackPane>
-

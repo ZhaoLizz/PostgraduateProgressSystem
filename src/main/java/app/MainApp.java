@@ -8,6 +8,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
@@ -22,6 +23,10 @@ public class MainApp extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         this.primaryStage = primaryStage;
+
+        Font.loadFont(MainApp.class.getResource("../../resources/roboto/FontAwesome.ttf").
+                toExternalForm(), 12);
+
         //加载布局
         Parent root = FXMLLoader.load(getClass().getResource("../../resources/layout/layout_login.fxml"));
         //取消系统默认装饰

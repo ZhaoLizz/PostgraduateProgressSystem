@@ -1,30 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.jfoenix.controls.*?>
+<?import com.jfoenix.controls.JFXBadge?>
+<?import com.jfoenix.controls.JFXHamburger?>
+<?import com.jfoenix.controls.JFXRippler?>
 <?import com.jfoenix.transitions.hamburger.HamburgerBackArrowBasicTransition?>
 <?import com.jfoenix.transitions.hamburger.HamburgerBasicCloseTransition?>
 <?import com.jfoenix.transitions.hamburger.HamburgerNextArrowBasicTransition?>
 <?import com.jfoenix.transitions.hamburger.HamburgerSlideCloseTransition?>
 <?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
-<StackPane fx:id="root" xmlns:fx="http://javafx.com/fxml/1"
-           xmlns="http://javafx.com/javafx/2.2">
-    <VBox maxWidth="400" maxHeight="400">
+<?import javafx.scene.layout.VBox?>
+
+<StackPane fx:id="root" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1">
+    <VBox maxHeight="400" maxWidth="400">
         <Label styleClass="title-label">Font Awesome Icons</Label>
         <HBox spacing="20" style="-fx-padding: 0 0 0 50;">
             <JFXRippler position="BACK" styleClass="icons-rippler">
                 <StackPane style="-fx-padding: 10;">
-                    <FontAwesomeIconView glyphName="STAR" size="2em"
-                                         styleClass="icon"/>
+                    <FontAwesomeIconView glyphName="STAR" size="2em" styleClass="icon" />
                 </StackPane>
             </JFXRippler>
 
             <JFXRippler position="BACK" styleClass="icons-rippler1">
                 <StackPane style="-fx-padding: 10;">
-                    <FontAwesomeIconView glyphName="HEART" size="2em"
-                                         styleClass="icon"/>
+                    <FontAwesomeIconView glyphName="HEART" size="2em" styleClass="icon" text="" />
                 </StackPane>
             </JFXRippler>
 
@@ -34,16 +35,16 @@
         <HBox spacing="20" style="-fx-padding: 0 0 0 50;" styleClass="animated-burgers">
             <children>
                 <JFXHamburger fx:id="burger1" style="-fx-padding:20;">
-                    <HamburgerSlideCloseTransition/>
+                    <HamburgerSlideCloseTransition />
                 </JFXHamburger>
                 <JFXHamburger fx:id="burger2" style="-fx-padding:20;">
-                    <HamburgerBackArrowBasicTransition/>
+                    <HamburgerBackArrowBasicTransition />
                 </JFXHamburger>
                 <JFXHamburger fx:id="burger3" style="-fx-padding:20;">
-                    <HamburgerBasicCloseTransition/>
+                    <HamburgerBasicCloseTransition />
                 </JFXHamburger>
                 <JFXHamburger fx:id="burger4" style="-fx-padding:20;">
-                    <HamburgerNextArrowBasicTransition/>
+                    <HamburgerNextArrowBasicTransition />
                 </JFXHamburger>
             </children>
         </HBox>
@@ -51,17 +52,12 @@
         <Label styleClass="title-label">Badge Icons</Label>
         <HBox spacing="20" style="-fx-padding: 0 0 0 50;">
             <children>
-                <JFXBadge fx:id="badge1" position="TOP_RIGHT" text="1"
-                          styleClass="icons-badge">
+                <JFXBadge fx:id="badge1" position="TOP_RIGHT" styleClass="icons-badge" text="1">
                     <StackPane style="-fx-padding: 10;">
-                        <FontAwesomeIconView glyphName="STAR" size="2em"
-                                             styleClass="icon"/>
+                        <FontAwesomeIconView glyphName="STAR" size="2em" styleClass="icon" />
                     </StackPane>
                 </JFXBadge>
             </children>
         </HBox>
     </VBox>
 </StackPane>
-
-
-

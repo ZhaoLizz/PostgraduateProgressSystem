@@ -1,10 +1,18 @@
 package main.java.controller;
 
+import com.jfoenix.controls.JFXAlert;
+import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXDialogLayout;
 import com.jfoenix.controls.JFXDrawer;
 import com.jfoenix.controls.JFXHamburger;
+import com.jfoenix.controls.JFXListView;
+import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXPopup;
 import com.jfoenix.controls.JFXRippler;
+import com.jfoenix.controls.JFXTextField;
 
+
+import java.util.List;
 
 import javax.annotation.PostConstruct;
 
@@ -15,12 +23,20 @@ import io.datafx.controller.flow.container.ContainerAnimations;
 import io.datafx.controller.flow.context.FXMLViewFlowContext;
 import io.datafx.controller.flow.context.ViewFlowContext;
 import javafx.animation.Transition;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import main.java.datafx.ExtendedAnimatedFlowContainer;
+import main.java.db.JDBCDao;
 import main.java.model.CurUser;
+import main.java.utils.TextUtils;
 
 @ViewController(value = "../../resources/layout/layout_main.fxml")
 public class MainController {
@@ -29,7 +45,7 @@ public class MainController {
     private ViewFlowContext context;
 
     @FXML
-    private StackPane root;
+    private static StackPane root;
     @FXML
     private StackPane titleBurgerContainer;
     @FXML
@@ -71,6 +87,23 @@ public class MainController {
         Flow innerFlow = null;
         boolean isManager = CurUser.getInstance().isStudent_is_manager();
 
+        try {
+            //右上角
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("../../resources/layout/popup/MainPopup.fxml"));
+            loader.setController(new InputController());
+            toolbarPopup = new JFXPopup(loader.load());
+            optionsBurger.setOnMouseClicked(e -> toolbarPopup.show(optionsBurger,
+                    JFXPopup.PopupVPosition.TOP,
+                    JFXPopup.PopupHPosition.RIGHT,
+                    -12,
+                    15));
+
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         //设置默认显示的布局
         if (isManager) {
             currentUserType.setText("管理端");
@@ -78,7 +111,7 @@ public class MainController {
         } else {
             currentUserType.setText("学生端");
             //TODO 学生端列表界面
-//            innerFlow = new Flow(ProgressGridController.class);
+            innerFlow = new Flow(StuProgressGridController.class);
         }
 
         try {
@@ -99,4 +132,18 @@ public class MainController {
 
     }
 
+    public static final class InputController {
+        @FXML
+        private JFXListView<?> toolbarPopupList;
+
+        // close application
+        @FXML
+        private void submit() {
+            if (toolbarPopupList.getSelectionModel().getSelectedIndex() == 1) {
+                Platform.exit();
+            } else {
+
+            }
+        }
+    }
 }

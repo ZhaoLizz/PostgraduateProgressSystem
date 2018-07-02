@@ -7,7 +7,7 @@
 <JFXListView fx:id="toolbarPopupList" styleClass="option-list-view"
              onMouseClicked="#submit" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
     <Label>
-        Contact Us
+        添加学习进度
         <graphic>
             <StackPane styleClass="custom-jfx-list-view-icon-container">
                 <FontAwesomeIconView glyphName="USER" size="1.5em"
@@ -16,7 +16,7 @@
         </graphic>
     </Label>
     <Label>
-        Exit
+        退出账号
         <graphic>
             <StackPane styleClass="custom-jfx-list-view-icon-container">
                 <FontAwesomeIconView glyphName="REPLY" size="1.5em"

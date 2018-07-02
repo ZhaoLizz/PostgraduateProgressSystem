@@ -86,12 +86,12 @@ public class SlideMenuController {
 //        bindNodeToController(labelFive, sideContentController[1], contentFlow, contentFlowHandler);
         } else {
             //TODO 学生端侧边栏
-            sideContentTitle = new String[]{"考研进度","科目信息"};
-            sideContentController = new Class[]{ProgressGridController.class, StudentGridController.class, SubjectGridController.class};
+            sideContentTitle = new String[]{"考研进度","我的进度"};
+            sideContentController = new Class[]{StuProgressGridController.class,MyProgressController.class};
 
             labelOne.setText(sideContentTitle[0]);
             labelTwo.setText(sideContentTitle[1]);
-            labelThree.setText(sideContentTitle[2]);
+//            labelThree.setText(sideContentTitle[2]);
 //        labelFour.setText(sideContentTitle[3]);
 //        labelFive.setText(sideContentTitle[4]);
             Objects.requireNonNull(context, "context");
@@ -116,7 +116,7 @@ public class SlideMenuController {
             Flow contentFlow = (Flow) context.getRegisteredObject("ContentFlow");
             bindNodeToController(labelOne, sideContentController[0], contentFlow, contentFlowHandler);
             bindNodeToController(labelTwo, sideContentController[1], contentFlow, contentFlowHandler);
-            bindNodeToController(labelThree, sideContentController[2], contentFlow, contentFlowHandler);
+//            bindNodeToController(labelThree, sideContentController[2], contentFlow, contentFlowHandler);
 //        bindNodeToController(dialogs, DialogController.class, contentFlow, contentFlowHandler);
 //        bindNodeToController(labelFive, sideContentController[1], contentFlow, contentFlowHandler);
         }
