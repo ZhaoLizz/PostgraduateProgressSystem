@@ -76,6 +76,9 @@ public class MainController {
     public static JFXComboBox<Label> materialComboBox = new JFXComboBox<>();
     public static JFXSlider chapterIndexSlider = new JFXSlider();
 
+    public static final int TYPE_INSERT = 0;
+    public static final int TYPE_UPDATE = 1;
+
 
     @PostConstruct
     public void init() throws Exception {
@@ -157,88 +160,115 @@ public class MainController {
             if (toolbarPopupList.getSelectionModel().getSelectedIndex() == 1) {
                 Platform.exit();
             } else {
-                //添加学习进度
-                JFXAlert alert = new JFXAlert((Stage) root.getScene().getWindow());
-                alert.initModality(Modality.APPLICATION_MODAL);
-                alert.setOverlayClose(true);
-                JFXDialogLayout layout = new JFXDialogLayout();
-                Label label = new Label("添加学习进度");
-                label.setFont(Font.font(Font.getFamilies().get(3)));
-                layout.setHeading(label);
-                setupSubjectNameComboBox(subjectNameComboBox, subjectNameConverter);
-                chapterNameComboBox.setPromptText("章节名称");
-                chapterNameComboBox.setEditable(true);
-
-                Text text = new Text("章节序号");
-                chapterIndexSlider.getStyleClass().add("jfx-slider-style");
-                chapterIndexSlider.setMax(10);
-                chapterIndexSlider.setMaxWidth(180);
-                chapterIndexSlider.setOnMouseReleased(e -> {
-                    int curIndex = (int) chapterIndexSlider.getValue();
-                    if (curIndex != 0) {
-                        String subjectName = subjectNameComboBox.getSelectionModel().getSelectedItem().getText();
-                        Chapter chapter = new Chapter();
-                        chapter.setSubject_name(subjectName);
-                        chapter.setChapter_index(curIndex);
-                        chapter.query(Chapter.class, new JDBCDao.QueryListener<Chapter>() {
-                            @Override
-                            public void onSucceed(List<Chapter> result) {
-                                String chapterName = result.get(0).getChapter_name();
-                                chapterNameComboBox.setValue(new Label(chapterName));
-                            }
-
-                            @Override
-                            public void onFailed(Exception e) {
-
-                            }
-                        });
-                    } else {
-                        chapterNameComboBox.setValue(new Label(""));
-                    }
-                });
-                HBox chaperIndexBox = new HBox(text, chapterIndexSlider);
-
-                materialComboBox.setPromptText("参考资料");
-                materialComboBox.setEditable(true);
-
-                VBox vBox = new VBox(subjectNameComboBox, materialComboBox, chapterNameComboBox, chaperIndexBox);
-                vBox.setSpacing(20);
-                JFXButton commitBtn = new JFXButton("确定");
-                commitBtn.getStyleClass().add("dialog-accept");
-                JFXButton cancelBtn = new JFXButton("取消");
-                cancelBtn.getStyleClass().add("dialog-accept");
-                cancelBtn.setOnAction(event1 -> alert.hideWithAnimation());
-                commitBtn.setOnMouseReleased(e -> {
-                    String subjectName = subjectNameComboBox.getSelectionModel().getSelectedItem().getText();
-                    String chapterName = chapterNameComboBox.getSelectionModel().getSelectedItem().getText();
-                    String studentNo = CurUser.getInstance().getStudent_no();
-                    Progress progress = new Progress();
-                    progress.setChapter_name(chapterName);
-                    progress.setSubject_name(subjectName);
-                    progress.setStudent_no(studentNo);
-                    progress.save(new JDBCDao.SaveListerner() {
-                        @Override
-                        public void onSucceed() {
-                            Toast.logger("save progress succeed");
-                            alert.close();
-                        }
-
-                        @Override
-                        public void onFailed(Exception e) {
-
-                        }
-                    });
-                });
-
-                layout.setActions(commitBtn, cancelBtn);
-                layout.setBody(vBox);
-                layout.setMaxHeight(200);
-                layout.setMaxWidth(300);
-                alert.setContent(layout);
-                alert.show();
+                showAddProgressDialog(TYPE_INSERT, null);
             }
         }
     }
+
+    public static void showAddProgressDialog(int databaseType,Progress newValue) {
+        //添加学习进度
+        JFXAlert alert = new JFXAlert((Stage) root.getScene().getWindow());
+        alert.initModality(Modality.APPLICATION_MODAL);
+        alert.setOverlayClose(true);
+        JFXDialogLayout layout = new JFXDialogLayout();
+        Label label = null;
+        if (databaseType == TYPE_INSERT) {
+            label = new Label("添加学习进度");
+        } else {
+            label = new Label("修改学习进度");
+        }
+        label.setFont(Font.font(Font.getFamilies().get(3)));
+        layout.setHeading(label);
+        setupSubjectNameComboBox(subjectNameComboBox, subjectNameConverter);
+        chapterNameComboBox.setPromptText("章节名称");
+        chapterNameComboBox.setEditable(true);
+
+        Text text = new Text("章节序号");
+        chapterIndexSlider.getStyleClass().add("jfx-slider-style");
+        chapterIndexSlider.setMax(10);
+        chapterIndexSlider.setMaxWidth(180);
+        chapterIndexSlider.setOnMouseReleased(e -> {
+            int curIndex = (int) chapterIndexSlider.getValue();
+            if (curIndex != 0) {
+                String subjectName = subjectNameComboBox.getSelectionModel().getSelectedItem().getText();
+                Chapter chapter = new Chapter();
+                chapter.setSubject_name(subjectName);
+                chapter.setChapter_index(curIndex);
+                chapter.query(Chapter.class, new JDBCDao.QueryListener<Chapter>() {
+                    @Override
+                    public void onSucceed(List<Chapter> result) {
+                        String chapterName = result.get(0).getChapter_name();
+                        chapterNameComboBox.setValue(new Label(chapterName));
+                    }
+
+                    @Override
+                    public void onFailed(Exception e) {
+
+                    }
+                });
+            } else {
+                chapterNameComboBox.setValue(new Label(""));
+            }
+        });
+        HBox chaperIndexBox = new HBox(text, chapterIndexSlider);
+
+        materialComboBox.setPromptText("参考资料");
+        materialComboBox.setEditable(true);
+
+        VBox vBox = new VBox(subjectNameComboBox, materialComboBox, chapterNameComboBox, chaperIndexBox);
+        vBox.setSpacing(20);
+        JFXButton commitBtn = new JFXButton("确定");
+        commitBtn.getStyleClass().add("dialog-accept");
+        JFXButton cancelBtn = new JFXButton("取消");
+        cancelBtn.getStyleClass().add("dialog-accept");
+        cancelBtn.setOnAction(event1 -> alert.hideWithAnimation());
+        commitBtn.setOnMouseReleased(e -> {
+            String subjectName = subjectNameComboBox.getSelectionModel().getSelectedItem().getText();
+            String chapterName = chapterNameComboBox.getSelectionModel().getSelectedItem().getText();
+            String studentNo = CurUser.getInstance().getStudent_no();
+            Progress progress = new Progress();
+            progress.setChapter_name(chapterName);
+            progress.setSubject_name(subjectName);
+            progress.setStudent_no(studentNo);
+            if (databaseType == TYPE_INSERT) {
+                progress.save(new JDBCDao.SaveListerner() {
+                    @Override
+                    public void onSucceed() {
+                        Toast.logger("save progress succeed");
+                        alert.close();
+                    }
+
+                    @Override
+                    public void onFailed(Exception e) {
+
+                    }
+                });
+            } else {
+                System.out.println(chapterName + "  " + subjectName + " " + studentNo);
+                System.out.println("chapter name : " +  MainController.chapterNameComboBox.getSelectionModel().getSelectedItem().getText());
+                newValue.update(progress, new JDBCDao.UpdateListener() {
+                    @Override
+                    public void onSucceed() {
+                        System.out.println("update succeed");
+                    }
+
+                    @Override
+                    public void onFailed(Exception e) {
+                        e.printStackTrace();
+                        System.out.println("update progress failed");
+                    }
+                });
+            }
+        });
+
+        layout.setActions(commitBtn, cancelBtn);
+        layout.setBody(vBox);
+        layout.setMaxHeight(200);
+        layout.setMaxWidth(300);
+        alert.setContent(layout);
+        alert.show();
+    }
+
 
     public static void setupSubjectNameComboBox(JFXComboBox<Label> jfxEditableComboBox, StringConverter<Label> stringConverter) {
         //setup comboBox
@@ -246,10 +276,10 @@ public class MainController {
         materialComboBox.getItems().clear();
         chapterIndexSlider.setValue(0);
         Set<String> chapterNameSet = new HashSet<>();
-        new Progress().query(Progress.class, new JDBCDao.QueryListener<Progress>() {
+        new Subject().query(Subject.class, new JDBCDao.QueryListener<Subject>() {
             @Override
-            public void onSucceed(List<Progress> result) {
-                for (Progress p : result) {
+            public void onSucceed(List<Subject> result) {
+                for (Subject p : result) {
                     chapterNameSet.add(p.getSubject_name());
                 }
                 for (String s : chapterNameSet) {
@@ -260,7 +290,7 @@ public class MainController {
 
             @Override
             public void onFailed(Exception e) {
-
+                e.printStackTrace();
             }
         });
 

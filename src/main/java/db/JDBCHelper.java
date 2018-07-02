@@ -55,7 +55,6 @@ public class JDBCHelper {
     private void initJdbc() {
         try {
             Class.forName(DRIVER);
-            System.out.println("数据库连接成功");
             connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
@@ -83,6 +82,7 @@ public class JDBCHelper {
      * @throws SQLException
      */
     public int updateByPreparedStatement(String sql, List<Object> params) throws SQLException {
+
         int result = -1;
         pstmt = connection.prepareStatement(sql);
         int index = 1;

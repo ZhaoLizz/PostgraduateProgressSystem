@@ -34,6 +34,8 @@ import main.java.db.JDBCDao;
 import main.java.model.CurUser;
 import main.java.model.Progress;
 import main.java.model.Subject;
+import main.java.utils.Toast;
+import sun.applet.Main;
 
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
@@ -47,6 +49,7 @@ public class MyProgressController {
     private ScrollPane scrollPane;
     @FXML
     private JFXMasonryPane masonryPane;
+
 
     /**
      * init fxml when loaded.
@@ -134,6 +137,15 @@ public class MyProgressController {
             button.translateYProperty().bind(Bindings.createDoubleBinding(() -> {
                 return header.getBoundsInParent().getHeight() - button.getHeight() / 2;
             }, header.boundsInParentProperty(), button.heightProperty()));
+            button.setOnMouseReleased(e->{
+                MainController.chapterNameComboBox.setValue(new Label(chapter_name));
+                MainController.materialComboBox.setValue(new Label(subject_material[0]));
+                MainController.subjectNameComboBox.setValue(new Label(subject_name));
+
+                Progress newValue = new Progress();
+                MainController.showAddProgressDialog(MainController.TYPE_UPDATE, newValue);
+            });
+
             StackPane.setMargin(button, new Insets(0, 12, 0, 0));
             StackPane.setAlignment(button, Pos.TOP_RIGHT);
 
@@ -157,44 +169,44 @@ public class MyProgressController {
     private String getDefaultColor(int i) {
         String color = "#FFFFFF";
         switch (i) {
-            case 0:
+            case 12:
                 color = "#8F3F7E";
                 break;
-            case 1:
+            case 11:
                 color = "#B5305F";
                 break;
-            case 2:
+            case 10:
                 color = "#CE584A";
                 break;
-            case 3:
+            case 9:
                 color = "#DB8D5C";
                 break;
-            case 4:
+            case 8:
                 color = "#DA854E";
                 break;
-            case 5:
+            case 7:
                 color = "#E9AB44";
                 break;
             case 6:
                 color = "#FEE435";
                 break;
-            case 7:
+            case 5:
                 color = "#99C286";
                 break;
-            case 8:
+            case 4:
                 color = "#01A05E";
                 break;
-            case 9:
+            case 3:
                 color = "#4A8895";
                 break;
-            case 10:
+            case 2:
                 color = "#16669B";
                 break;
-            case 11:
+            case 1:
                 color = "#2F65A5";
                 break;
-            case 12:
-                color = "#4E6A9C";
+            case 0:
+                color = "#39C5BB";
                 break;
             default:
                 break;
