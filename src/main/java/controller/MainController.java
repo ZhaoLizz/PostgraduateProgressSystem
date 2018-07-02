@@ -160,12 +160,12 @@ public class MainController {
             if (toolbarPopupList.getSelectionModel().getSelectedIndex() == 1) {
                 Platform.exit();
             } else {
-                showAddProgressDialog(TYPE_INSERT, null);
+                showAddProgressDialog(TYPE_INSERT);
             }
         }
     }
 
-    public static void showAddProgressDialog(int databaseType,Progress newValue) {
+    public static void showAddProgressDialog(int databaseType) {
         //添加学习进度
         JFXAlert alert = new JFXAlert((Stage) root.getScene().getWindow());
         alert.initModality(Modality.APPLICATION_MODAL);
@@ -246,6 +246,10 @@ public class MainController {
             } else {
                 System.out.println(chapterName + "  " + subjectName + " " + studentNo);
                 System.out.println("chapter name : " +  MainController.chapterNameComboBox.getSelectionModel().getSelectedItem().getText());
+                Progress newValue = new Progress();
+                newValue.setChapter_name(chapterNameComboBox.getSelectionModel().getSelectedItem().getText());
+                newValue.setSubject_name(subjectNameComboBox.getSelectionModel().getSelectedItem().getText());
+
                 newValue.update(progress, new JDBCDao.UpdateListener() {
                     @Override
                     public void onSucceed() {

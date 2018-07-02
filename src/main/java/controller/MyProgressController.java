@@ -138,12 +138,13 @@ public class MyProgressController {
                 return header.getBoundsInParent().getHeight() - button.getHeight() / 2;
             }, header.boundsInParentProperty(), button.heightProperty()));
             button.setOnMouseReleased(e->{
+                //设置dialog框框里的初始值
                 MainController.chapterNameComboBox.setValue(new Label(chapter_name));
                 MainController.materialComboBox.setValue(new Label(subject_material[0]));
                 MainController.subjectNameComboBox.setValue(new Label(subject_name));
 
-                Progress newValue = new Progress();
-                MainController.showAddProgressDialog(MainController.TYPE_UPDATE, newValue);
+                //显示dialog,更新数据库
+                MainController.showAddProgressDialog(MainController.TYPE_UPDATE);
             });
 
             StackPane.setMargin(button, new Insets(0, 12, 0, 0));
