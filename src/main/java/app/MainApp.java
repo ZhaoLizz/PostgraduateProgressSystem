@@ -1,5 +1,7 @@
 package main.java.app;
 
+import java.io.IOException;
+
 import io.datafx.controller.flow.context.FXMLViewFlowContext;
 import io.datafx.controller.flow.context.ViewFlowContext;
 import javafx.application.Application;
@@ -11,6 +13,7 @@ import javafx.scene.Scene;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import sun.applet.Main;
 
 
 public class MainApp extends Application {
@@ -46,25 +49,30 @@ public class MainApp extends Application {
         primaryStage.setOnCloseRequest(event -> Platform.exit());
     }
 
+    public static void showLoginStage() {
+        try {
+            //加载布局
+            Parent root = FXMLLoader.load(MainApp.class.getResource("../../resources/layout/layout_login.fxml"));
+            //取消系统默认装饰
+            primaryStage.initStyle(StageStyle.UNDECORATED);
+            primaryStage.setTitle("考研进度管理系统");
 
-    /*    public Initializable replaceSceneContent(String fxml) throws Exception {
-            FXMLLoader loader = new FXMLLoader();
-            InputStream in = MainApp.class.getResourceAsStream(fxml);
-            loader.setBuilderFactory(new JavaFXBuilderFactory());
-            loader.setLocation(MainApp.class.getResource(fxml));
-            Pane pane;
-            try {
-                pane = loader.load(in);
-            } finally {
-                in.close();
-            }
-            root.requestFocus();
-            root.getChildren().removeAll();
-            root.getChildren().clear();
-            root.getChildren().addAll(pane);
+            Scene mainScene = new Scene(root, 350, 420);
+            mainScene.setRoot(root);
+            final ObservableList<String> stylesheets = mainScene.getStylesheets();
+            stylesheets.addAll(MainApp.class.getResource("../../resources/css/jfoenix-design.css").toExternalForm(),
+                    MainApp.class.getResource("../../resources/css/jfoenix-main-demo.css").toExternalForm());
 
-            return (Initializable) loader.getController();
-        }*/
+            primaryStage.setResizable(false);
+            primaryStage.setScene(mainScene);
+            primaryStage.show();
+            //退出
+            primaryStage.setOnCloseRequest(event -> Platform.exit());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void main(String[] args) {
         launch(args);
     }

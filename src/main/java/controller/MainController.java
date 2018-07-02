@@ -41,6 +41,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import javafx.util.StringConverter;
+import main.java.app.MainApp;
 import main.java.datafx.ExtendedAnimatedFlowContainer;
 import main.java.db.JDBCDao;
 import main.java.model.Chapter;
@@ -159,6 +160,7 @@ public class MainController {
         private void submit() {
             if (toolbarPopupList.getSelectionModel().getSelectedIndex() == 1) {
                 Platform.exit();
+                MainApp.showLoginStage();
             } else {
                 showAddProgressDialog(TYPE_INSERT, null);
             }
