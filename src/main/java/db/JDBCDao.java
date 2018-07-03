@@ -3,7 +3,7 @@ package main.java.db;
 import java.util.List;
 
 public class JDBCDao {
-    public interface SaveListerner{
+    public interface SaveListerner {
         void onSucceed();
 
         void onFailed(Exception e);
@@ -21,17 +21,10 @@ public class JDBCDao {
         void onFailed(Exception e);
     }
 
-    public  interface  QueryListener <T>{
+    public interface QueryListener<T> {
         void onSucceed(List<T> result);
 
         void onFailed(Exception e);
     }
-
-
-
-
-
-
-
 
 }

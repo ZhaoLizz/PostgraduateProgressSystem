@@ -44,6 +44,7 @@ import javafx.util.StringConverter;
 import main.java.app.MainApp;
 import main.java.datafx.ExtendedAnimatedFlowContainer;
 import main.java.db.JDBCDao;
+import main.java.db.JDBCHelper;
 import main.java.model.Chapter;
 import main.java.model.CurUser;
 import main.java.model.Progress;
@@ -160,6 +161,7 @@ public class MainController {
         private void submit() {
             if (toolbarPopupList.getSelectionModel().getSelectedIndex() == 1) {
                 Platform.exit();
+                JDBCHelper.getInstance().releaseConn();
                 MainApp.showLoginStage();
             } else {
                 showAddProgressDialog(TYPE_INSERT, null);
@@ -453,6 +455,4 @@ public class MainController {
         });
 
     }
-
-
 }

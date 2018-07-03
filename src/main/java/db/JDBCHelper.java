@@ -82,7 +82,6 @@ public class JDBCHelper {
      * @throws SQLException
      */
     public int updateByPreparedStatement(String sql, List<Object> params) throws SQLException {
-
         int result = -1;
         pstmt = connection.prepareStatement(sql);
         int index = 1;
@@ -91,7 +90,6 @@ public class JDBCHelper {
         if (params != null && !params.isEmpty()) {
             for (int i = 0; i < params.size(); i++) {
                 pstmt.setObject(index++, params.get(i));
-
                 Toast.logger(params.get(i).toString());
             }
         }
@@ -100,39 +98,6 @@ public class JDBCHelper {
     }
 
 
-    /**
-     * 查询单条数据
-     * 多条数据时只返回最后一行
-     *
-     * @param sql
-     * @param params
-     * @return 列名-值 映射
-     * @throws SQLException
-     */
-    public Map<String, Object> findSingleResult(String sql, List<Object> params) throws SQLException {
-        Map<String, Object> map = new HashMap<>();
-        pstmt = connection.prepareStatement(sql);
-        if (params != null && !params.isEmpty()) {
-            for (int i = 0; i < params.size(); i++) {
-                pstmt.setObject(i + 1, params.get(i));
-            }
-        }
-        resultSet = pstmt.executeQuery();   //返回查询结果
-        ResultSetMetaData metaData = resultSet.getMetaData();   //ResultMetaData用于处理列数据
-        int cloLen = metaData.getColumnCount(); //列的数量
-
-        while (resultSet.next()) {
-            for (int i = 1; i <= cloLen; i++) {
-                String cols_name = metaData.getColumnName(i);   //列名
-                Object cols_value = resultSet.getObject(cols_name);//列对应的数据
-                if (cols_value == null) {
-                    cols_value = "";
-                }
-                map.put(cols_name, cols_value);
-            }
-        }
-        return map;
-    }
 
     public List<Map<String, Object>> findMlutiResult(String sql, List<Object> params) throws SQLException {
         List<Map<String, Object>> list = new ArrayList<>();
@@ -140,7 +105,6 @@ public class JDBCHelper {
         if (params != null && !params.isEmpty()) {
             for (int i = 0; i < params.size(); i++) {
                 pstmt.setObject(i + 1, params.get(i));
-
             }
         }
 
@@ -162,45 +126,7 @@ public class JDBCHelper {
         return list;
     }
 
-    /**
-     * 利用反射机制查询单条记录
-     *
-     * @param sql
-     * @param params
-     * @param cls
-     * @param <T>
-     * @return 查询到的数据作为一个对象返回
-     * @throws Exception
-     */
-    public <T> T findSingleRefResult(String sql, List<Object> params, Class<T> cls) throws Exception {
-        T resultObject = null;
-        int index = 1;
-        pstmt = connection.prepareStatement(sql);
-        if (params != null && !params.isEmpty()) {
-            for (int i = 0; i < params.size(); i++) {
-                pstmt.setObject(index++, params.get(i));
-            }
-        }
-        resultSet = pstmt.executeQuery();
-        ResultSetMetaData metaData = resultSet.getMetaData();
-        int cols_len = metaData.getColumnCount();
-        while (resultSet.next()) {
-            //通过反射创建一个实例
-            //查询出每一列的列名,然后根据反射来给泛型对象的域设定值,最后返回这个泛型对象
-            resultObject = cls.newInstance();
-            for (int i = 0; i < cols_len; i++) {
-                String cols_name = metaData.getColumnName(i + 1);
-                Object cols_value = resultSet.getObject(cols_name);
-                if (cols_value == null) {
-                    cols_value = "";
-                }
-                Field field = cls.getDeclaredField(cols_name);  //获取泛型类中定义的域
-                field.setAccessible(true);
-                field.set(resultObject, cols_value); //给某个域设值
-            }
-        }
-        return resultObject;
-    }
+
 
 
     /**
@@ -217,16 +143,13 @@ public class JDBCHelper {
         List<Object> params = new ArrayList<>();
         Field[] fields = baseDao.getDeclaredFields();
 
-
         //通过参数对象的域构造查询条件
         for (int i = 0; i < fields.length; i++) {
             fields[i].setAccessible(true);
-            Object val = fields[i].get(condition);
-
+            Object val = fields[i].get(condition);  //获取域的值
             if (val != null) {
                 sql += fields[i].getName() + "=? and ";
                 params.add(val);
-
             }
         }
 
@@ -235,10 +158,6 @@ public class JDBCHelper {
             String table = condition.getClass().getName();
             sql = "select * from " + table.substring(table.lastIndexOf(".") + 1, table.length())
                     + " where " + sql;
-
-//            sql = "select * from Student where student_pw = ?";
-//            params.clear();
-//            params.add("123");
 
             System.out.println(sql);
         } else {
@@ -404,23 +323,23 @@ public class JDBCHelper {
 
     public static void main(String[] args) {
         Student student = new Student();
-        student.setStudent_name("jiang");
-        student.setStudent_special("Science");
-        student.setStudent_no("123");
-        student.setStudent_target("Tinghua");
-        student.setStudent_pw("123");
-
+//        student.setStudent_name("jiang");
+//        student.setStudent_special("Science");
+//        student.setStudent_no("123");
+//        student.setStudent_target("Tinghua");
+//        student.setStudent_pw("123");
 //        student.setStudent_is_manager(0);
-
-        student.save(new JDBCDao.SaveListerner() {
+        student.query(Student.class, new JDBCDao.QueryListener<Student>() {
             @Override
-            public void onSucceed() {
-                System.out.println("cheng gong");
+            public void onSucceed(List<Student> result) {
+                for (Student s : result) {
+                    System.out.println(s);
+                }
             }
 
             @Override
             public void onFailed(Exception e) {
-                e.printStackTrace();
+
             }
         });
     }

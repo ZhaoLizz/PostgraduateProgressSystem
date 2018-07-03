@@ -51,16 +51,6 @@ import main.java.utils.TextUtils;
 import main.java.utils.Toast;
 
 public class LoginController implements Initializable {
-
-
-    //登录用户类型标记
-    private static final int TYPE_TEACHER = 0x00;
-    private static final int TYPE_CLASS = 0x01;
-    private static final int TYPE_ADMIN = 0x02;
-
-    private int currentType;
-
-
     private Scene scene;
     @FXML
     private BorderPane borderPane;  //登录界面总布局
@@ -279,7 +269,7 @@ public class LoginController implements Initializable {
                                 public void onSucceed() {
                                     CurUser curUser = CurUser.getInstance();
                                     curUser.setStudent_no(username);
-                                    showDialog("提示","注册成功");
+                                    showDialog("提示", "注册成功");
                                     System.out.println("注册保存成功");
                                     changeToMainStage();
                                 }
@@ -389,8 +379,4 @@ public class LoginController implements Initializable {
         alert.setContent(layout);
         alert.show();
     }
-
-   
-
-
 }

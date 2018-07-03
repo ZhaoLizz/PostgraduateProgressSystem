@@ -32,7 +32,7 @@ public class JDBCObject {
         }
     }
 
-    public void update(Object condition,JDBCDao.UpdateListener listener) {
+    public void update(Object condition, JDBCDao.UpdateListener listener) {
         JDBCHelper helper = JDBCHelper.getInstance();
         try {
             int result = helper.update(this, condition);

@@ -84,9 +84,6 @@ public class MyProgressController {
             JFXDepthManager.setDepth(child, 1);
             children.add(child);
 
-            // create content
-//            Text subjectNameText = new Text(subject_name);
-//            subjectNameText.autosize();
             Label subjectNameLabel = new Label(subject_name);
             subjectNameLabel.setFont(Font.font(20));
             subjectNameLabel.setAlignment(Pos.CENTER);
@@ -94,6 +91,7 @@ public class MyProgressController {
             Label materialLabel = new Label(subject_material[0]);
             materialLabel.setFont(Font.font(20));
             materialLabel.setAlignment(Pos.CENTER);
+            materialLabel.setMinWidth(width);
             VBox upVBox = new VBox(subjectNameLabel, materialLabel);
 
             StackPane header = new StackPane(upVBox);
@@ -200,16 +198,16 @@ public class MyProgressController {
                 color = "#99C286";
                 break;
             case 4:
-                color = "#01A05E";
+                color = "#EF9A9A";
                 break;
             case 3:
-                color = "#4A8895";
+                color = "#90CAF9";
                 break;
             case 2:
-                color = "#16669B";
+                color = "#FFEE58";
                 break;
             case 1:
-                color = "#2F65A5";
+                color = "#80DEEA";
                 break;
             case 0:
                 color = "#39C5BB";
